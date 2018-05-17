@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "carta.h"
+#include "pilha.h"
 #include "pilha_estoque.h"
 
 int main()
@@ -11,7 +12,8 @@ int main()
     free_carta(carta);
 
     Pilha* pilha_estoque = cria_pilha_estoque();
-    pilha_estoque->free(pilha_estoque);
+    imprimePilha(pilha_estoque);
+    free_pilha(pilha_estoque);
 
     printf("Hello world!\n");
     return 0;

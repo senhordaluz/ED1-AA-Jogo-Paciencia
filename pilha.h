@@ -8,7 +8,7 @@ static struct pilha {
     // Topo de pilha
     int topo;
     // Vetor de cartas
-    Carta** cartas;
+    PCarta cartas[52];
 
     // Adiciona nova carta
     void (*push) (Pilha* self, Carta* carta);
@@ -16,14 +16,13 @@ static struct pilha {
     Carta* (*pop) (Pilha* self);
     // Limpa pilha
     void (*limpa) (Pilha* self);
-    // Libera pilha da memoria
-    void (*free) (Pilha* self);
 };
 
 void free_pilha(Pilha* pilha);
 void _pilha_push(Pilha* pilha, Carta* carta);
 Carta* _pilha_pop(Pilha* pilha);
 void _pilha_limpa(Pilha* pilha);
+void imprimePilha(Pilha* pilha);
 int isPilhaVazia(Pilha* pilha);
 int isPilhaCheia(Pilha* pilha);
 
@@ -34,7 +33,10 @@ void free_pilha(Pilha* pilha) {
 
 void _pilha_push(Pilha* pilha, Carta* carta) {
     if (!isPilhaCheia(pilha)) {
-        pilha->topo++;
+        if (isPilhaVazia(pilha))
+            pilha->topo = 0;
+        else
+            pilha->topo++;
         pilha->cartas[pilha->topo] = carta;
         return;
     }
@@ -63,8 +65,18 @@ void _pilha_limpa(Pilha* pilha) {
     }
 }
 
+void imprimePilha(Pilha* pilha) {
+    pilha->cartas[pilha->topo]->print(pilha->cartas[pilha->topo]);
+    if ( !isPilhaVazia(pilha) ) {
+        int i;
+        for (i = 0; i < pilha->topo; i++) {
+            pilha->cartas[i]->print(pilha->cartas[i]);
+        }
+    }
+}
+
 int isPilhaVazia(Pilha* pilha) {
-    if (pilha->topo == -1)
+    if (pilha->topo == 52)
         return 1;
     return 0;
 }

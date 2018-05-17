@@ -2,6 +2,7 @@
 #define CARTA_H_INCLUDED
 
 typedef struct carta Carta;
+typedef struct carta* PCarta;
 static struct carta {
     char valor;
     char naipe;
@@ -42,6 +43,7 @@ void free_carta(Carta* carta) {
 }
 
 static void _print(Carta* self) {
+    int ch = 0;
     char *valor, *naipe;
     switch (self->valor) {
         case 'A':
@@ -61,6 +63,7 @@ static void _print(Carta* self) {
             valor = "Dama";
             break;
         default:
+            ch = 1;
             valor = self->valor;
             break;
     }
@@ -82,7 +85,10 @@ static void _print(Carta* self) {
             naipe = "ouro";
             break;
     }
-    printf("%s de %s\n", valor, naipe);
+    if (ch)
+        printf("%c de %s\n", valor, naipe);
+    else
+        printf("%s de %s\n", valor, naipe);
 }
 
 static void _troca(Carta* carta, char valor[2]) {
