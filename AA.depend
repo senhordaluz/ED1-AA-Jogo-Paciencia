@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1526585756 source:w:\c\ed1\aa\main.c
+	<stdio.h>
+	<stdlib.h>
+	"carta.h"
+
+1526586130 w:\c\ed1\aa\carta.h
+
