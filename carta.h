@@ -26,6 +26,11 @@ Carta* nova_carta(char* valor) {
         carta->print = _print;
         carta->change = _troca;
 
+        if (!carta) {
+            printf("Erro: Nao foi possivel alocar memoria para a Carta!\nO programa sera encerrado!\n");
+            exit(1);
+        }
+
         return carta;
     }
     printf("Valor invalido!\n");
