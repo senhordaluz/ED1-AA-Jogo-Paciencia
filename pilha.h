@@ -16,6 +16,8 @@ static struct pilha {
     Carta* (*pop) (Pilha* self);
     // Limpa pilha
     void (*limpa) (Pilha* self);
+    // Libera pilha da memoria
+    void (*free) (Pilha* self);
 };
 
 void free_pilha(Pilha* pilha);
