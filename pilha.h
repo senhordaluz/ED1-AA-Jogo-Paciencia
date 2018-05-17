@@ -8,7 +8,7 @@ static struct pilha {
     // Topo de pilha
     int topo;
     // Vetor de cartas
-    Carta* cartas[52];
+    Carta** cartas;
 
     // Adiciona nova carta
     void (*push) (Pilha* self, Carta* carta);
@@ -23,18 +23,13 @@ static struct pilha {
 void free_pilha(Pilha* pilha);
 void _pilha_push(Pilha* pilha, Carta* carta);
 Carta* _pilha_pop(Pilha* pilha);
+void _pilha_limpa(Pilha* pilha);
 int isPilhaVazia(Pilha* pilha);
 int isPilhaCheia(Pilha* pilha);
 
 void free_pilha(Pilha* pilha) {
-    if (isPilhaVazia(pilha)) {
-        int i;
-        for (i = 0; i <= pilha->qtd_cartas; i++) {
-            Carta* carta = pilha->pop(pilha);
-            free_carta(carta);
-        }
-    }
-    free_pilha(pilha);
+    _pilha_limpa(pilha);
+    free(pilha);
 }
 
 void _pilha_push(Pilha* pilha, Carta* carta) {
@@ -56,6 +51,16 @@ Carta* _pilha_pop(Pilha* pilha) {
     }
     printf("Pilha vazia!\n");
     return NULL;
+}
+
+void _pilha_limpa(Pilha* pilha) {
+    if ( !isPilhaVazia(pilha) ) {
+        int i;
+        for (i = 0; i < pilha->topo; i++) {
+            Carta* carta = pilha->pop(pilha);
+            free_carta(carta);
+        }
+    }
 }
 
 int isPilhaVazia(Pilha* pilha) {
