@@ -24,6 +24,8 @@ Pilha* cria_pilha_estoque(void) {
 
     cria_baralho_ordenado(pilha);
     embaralhar(pilha);
+
+    return pilha;
 }
 
 static void cria_baralho_ordenado(Pilha* pilha) {
