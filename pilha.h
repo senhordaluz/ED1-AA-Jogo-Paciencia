@@ -4,6 +4,7 @@
 #include "carta.h"
 
 typedef struct pilha Pilha;
+typedef struct pilha* PPilha;
 static struct pilha {
     // Topo de pilha
     int topo;

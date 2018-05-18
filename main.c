@@ -4,6 +4,7 @@
 #include "carta.h"
 #include "pilha.h"
 #include "pilha_estoque.h"
+#include "pilha_naipe.h"
 
 int main()
 {
