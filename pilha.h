@@ -19,6 +19,7 @@ static struct pilha {
     void (*limpa) (Pilha* self);
 };
 
+Pilha* cria_pilha_standart(void);
 void free_pilha(Pilha* pilha);
 void _pilha_push(Pilha* pilha, Carta* carta);
 Carta* _pilha_pop(Pilha* pilha);
@@ -26,6 +27,23 @@ void _pilha_limpa(Pilha* pilha);
 void imprimePilha(Pilha* pilha);
 int isPilhaVazia(Pilha* pilha);
 int isPilhaCheia(Pilha* pilha);
+
+Pilha* cria_pilha_standart(void) {
+    Pilha* pilha = (Pilha*)malloc(sizeof(Pilha));
+
+    if (!pilha) {
+        printf("Erro: Nao foi possivel alocar memoria para a pilha standart!\nO programa sera encerrado!\n");
+        exit(1);
+    }
+
+    pilha->topo = 52;
+
+    pilha->push = _pilha_push;
+    pilha->pop = _pilha_pop;
+    pilha->limpa = _pilha_limpa;
+
+    return pilha;
+}
 
 void free_pilha(Pilha* pilha) {
     _pilha_limpa(pilha);

@@ -24,7 +24,6 @@ static struct pilhas_naipe {
 
 Pilhas_Naipe* cria_pilhas_naipe(void);
 void free_pilhas_naipe(Pilhas_Naipe* pilhas_naipe);
-static Pilha* _cria_unica_pilha_naipe(void);
 static int isNaipeAlocado(Pilhas_Naipe* pilhas_naipe, int naipe);
 static void _pilhas_naipe_push(Pilhas_Naipe* pilhas_naipe, int naipe, Carta* carta);
 static Carta* _pilhas_naipe_pop(Pilhas_Naipe* pilhas_naipe, int naipe);
@@ -40,7 +39,7 @@ Pilhas_Naipe* cria_pilhas_naipe(void) {
     int i;
     for (i = 0; i < 4; i++) {
         pilhas_naipe->naipes[i] = 4;
-        pilhas_naipe->pilha[i] = _cria_unica_pilha_naipe();
+        pilhas_naipe->pilha[i] = cria_pilha_standart();
     }
 
     pilhas_naipe->push = _pilhas_naipe_push;
@@ -50,24 +49,11 @@ Pilhas_Naipe* cria_pilhas_naipe(void) {
 }
 
 void free_pilhas_naipe(Pilhas_Naipe* pilhas_naipe) {
-    free(pilhas_naipe);
-}
-
-static Pilha* _cria_unica_pilha_naipe(void) {
-    Pilha* pilha = (Pilha*)malloc(sizeof(Pilha));
-
-    if (!pilha) {
-        printf("Erro: Nao foi possivel alocar memoria para a pilha de naipe!\nO programa sera encerrado!\n");
-        exit(1);
+    int i;
+    for (i = 0; i < 4; i++) {
+        free_pilha(pilhas_naipe->pilha[i]);
     }
-
-    pilha->topo = 52;
-
-    pilha->push = _pilha_push;
-    pilha->pop = _pilha_pop;
-    pilha->limpa = _pilha_limpa;
-
-    return pilha;
+    free(pilhas_naipe);
 }
 
 static int isNaipeAlocado(Pilhas_Naipe* pilhas_naipe, int naipe) {
