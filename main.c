@@ -5,6 +5,8 @@
 #include "pilha.h"
 #include "pilha_estoque.h"
 #include "pilha_naipe.h"
+#include "pilha_descarte.h"
+#include "pilha_fileira.h"
 
 int main()
 {
