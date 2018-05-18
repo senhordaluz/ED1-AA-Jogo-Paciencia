@@ -15,14 +15,15 @@ static struct pilhas_naipe {
     PPilha pilha[4];
 
     // Adiciona nova carta
-    void (*push) (PPilha* self, int naipe, Carta* carta);
+    void (*push) (Pilhas_Naipe* self, int naipe, Carta* carta);
     // Retira carta da pilha e retorna valor
-    Carta* (*pop) (PPilha* self, int naipe);
+    Carta* (*pop) (Pilhas_Naipe* self, int naipe);
     // Limpa pilha
-    void (*limpa) (PPilha* self);
+    void (*limpa) (Pilhas_Naipe* self);
 };
 
 Pilhas_Naipe* cria_pilhas_naipe(void);
+void free_pilhas_naipe(Pilhas_Naipe* pilhas_naipe);
 static Pilha* _cria_unica_pilha_naipe(void);
 static int isNaipeAlocado(Pilhas_Naipe* pilhas_naipe, int naipe);
 static void _pilhas_naipe_push(Pilhas_Naipe* pilhas_naipe, int naipe, Carta* carta);
@@ -45,6 +46,10 @@ Pilhas_Naipe* cria_pilhas_naipe(void) {
     pilhas_naipe->pop = _pilhas_naipe_pop;
 
     return pilhas_naipe;
+}
+
+void free_pilhas_naipe(Pilhas_Naipe* pilhas_naipe) {
+    free(pilhas_naipe);
 }
 
 static Pilha* _cria_unica_pilha_naipe(void) {
