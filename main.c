@@ -15,14 +15,17 @@ int main()
     free_carta(carta);
 
     Pilha* pilha_estoque = cria_pilha_estoque();
-    imprimePilha(pilha_estoque);
-
-
     Pilhas_Fileira* pilhas_fileira = cria_pilhas_fileira(pilha_estoque);
+    Pilhas_Naipe* pilhas_naipe = cria_pilhas_naipe();
+    Pilha* pilha_descarte = cria_pilha_descarte();
+
+    imprimePilha(pilha_estoque);
 
     free_pilha(pilha_estoque);
     free_pilhas_fileira(pilhas_fileira);
-    
+    free_pilhas_naipe(pilhas_naipe);
+    free_pilha(pilha_descarte);
+
     printf("Hello world!\n");
     return 0;
 }

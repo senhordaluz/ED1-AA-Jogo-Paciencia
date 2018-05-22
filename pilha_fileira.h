@@ -22,9 +22,9 @@ static struct pilhas_fileira {
 Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque);
 static void preenche_pilhas_fileira(Pilhas_Fileira* pilhas_fileira, Pilha* pilha_estoque);
 static void reordena_topo(Pilhas_Fileira* pilhas_fileira, int fileira_id);
-static int movimentacao_valida(Pilha* pilha_destino, Carta* carta);
-static int _movimentacao_valida_naipe(Carta* carta_topo, Carta* nova_carta);
-static int _movimentacao_valida_valor(Carta* carta_topo, Carta* nova_carta);
+static int pilha_fileira_movimentacao_valida(Pilha* pilha_destino, Carta* carta);
+static int pilha_fileira_movimentacao_valida_naipe(Carta* carta_topo, Carta* nova_carta);
+static int pilha_fileira_movimentacao_valida_valor(Carta* carta_topo, Carta* nova_carta);
 static void pilha_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_origem, int fileira_destino, int posicao_carta);
 static void pilha_fileira_push(Pilhas_Fileira* pilhas_fileira, int fileira_id, Carta* carta);
 static Carta* pilha_fileira_pop(Pilhas_Fileira* pilhas_fileira, int fileira_id);
@@ -104,14 +104,14 @@ static void reordena_topo(Pilhas_Fileira* pilhas_fileira, int fileira_id) {
     }
 }
 
-static int movimentacao_valida(Pilha* pilha_destino, Carta* carta) {
+static int pilha_fileira_movimentacao_valida(Pilha* pilha_destino, Carta* carta) {
     Carta* carta_topo = pilha_destino->cartas[pilha_destino->topo];
-    if (_movimentacao_valida_naipe(carta_topo, carta))
-        return _movimentacao_valida_valor(carta_topo, carta);
+    if (pilha_fileira_movimentacao_valida_naipe(carta_topo, carta))
+        return pilha_fileira_movimentacao_valida_valor(carta_topo, carta);
     return 0;
 }
 
-static int _movimentacao_valida_naipe(Carta* carta_topo, Carta* nova_carta) {
+static int pilha_fileira_movimentacao_valida_naipe(Carta* carta_topo, Carta* nova_carta) {
     switch (carta_topo->naipe) {
         case 'E': case 'e':
         case 'P': case 'p':
@@ -140,7 +140,7 @@ static int _movimentacao_valida_naipe(Carta* carta_topo, Carta* nova_carta) {
     }
 }
 
-static int _movimentacao_valida_valor(Carta* carta_topo, Carta* nova_carta) {
+static int pilha_fileira_movimentacao_valida_valor(Carta* carta_topo, Carta* nova_carta) {
     switch (carta_topo->valor) {
         case 'K': case 'k':
             if (nova_carta->valor == 'Q' || nova_carta->valor == 'q')
@@ -219,7 +219,7 @@ static void pilha_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_orige
 
     {
         Carta* carta_topo = pilha_origem->cartas[posicao_carta];
-        if ( !movimentacao_valida(pilha_destino, carta_topo) ) {
+        if ( !pilha_fileira_movimentacao_valida(pilha_destino, carta_topo) ) {
             printf("Movimentacao invalida!\n");
             return;
         }
@@ -251,7 +251,7 @@ static void pilha_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_orige
 static void pilha_fileira_push(Pilhas_Fileira* pilhas_fileira, int fileira_id, Carta* carta) {
     Pilha* pilha_destino = pilhas_fileira->pilha[fileira_id];
 
-    if ( !movimentacao_valida(pilha_destino, carta) ) {
+    if ( !pilha_fileira_movimentacao_valida(pilha_destino, carta) ) {
         printf("Movimentacao invalida!\n");
         return;
     }
