@@ -78,7 +78,7 @@ static void _print(Carta* self) {
             break;
         case 'P':
         case 'p':
-            naipe = "copas";
+            naipe = "paus";
             break;
         case 'O':
         case 'o':
