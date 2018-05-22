@@ -28,6 +28,7 @@ static int _movimentacao_valida_valor(Carta* carta_topo, Carta* nova_carta);
 static void pilha_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_origem, int fileira_destino, int posicao_carta);
 static void pilha_fileira_push(Pilhas_Fileira* pilhas_fileira, int fileira_id, Carta* carta);
 static Carta* pilha_fileira_pop(Pilhas_Fileira* pilhas_fileira, int fileira_id);
+static void pilha_fileira_limpa(Pilhas_Fileira* pilhas_fileira, Pilha* pilha_estoque);
 
 Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque) {
     if (pilha_estoque->topo != 51) {
@@ -53,6 +54,7 @@ Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque) {
     pilhas_fileira->push = pilha_fileira_push;
     pilhas_fileira->pop = pilha_fileira_pop;
     pilhas_fileira->move = pilha_fileira_move;
+    pilhas_fileira->limpa = pilha_fileira_limpa;
 
     return pilhas_fileira;
 }
@@ -264,6 +266,15 @@ static Carta* pilha_fileira_pop(Pilhas_Fileira* pilhas_fileira, int fileira_id) 
     reordena_topo(pilhas_fileira, fileira_id);
 
     return carta;
+}
+
+static void pilha_fileira_limpa(Pilhas_Fileira* pilhas_fileira, Pilha* pilha_estoque) {
+    int i;
+    for (i = 0; i < 7; i++) {
+        Pilha* pilha = pilhas_fileira->pilha[i];
+        pilha->limpa(pilha);
+    }
+    preenche_pilhas_fileira(pilhas_fileira, pilha_estoque);
 }
 
 #endif // PILHA_FILEIRA_H_INCLUDED
