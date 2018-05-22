@@ -9,7 +9,9 @@ static struct pilha {
     // Topo de pilha
     int topo;
     // Vetor de cartas
-    PCarta cartas[52];
+    PCarta* cartas;
+    // Total de cartas
+    int tamanho;
 
     // Adiciona nova carta
     void (*push) (Pilha* self, Carta* carta);
@@ -19,7 +21,7 @@ static struct pilha {
     void (*limpa) (Pilha* self);
 };
 
-Pilha* cria_pilha_standart(void);
+Pilha* cria_pilha_generica(int tamanho);
 void free_pilha(Pilha* pilha);
 void _pilha_push(Pilha* pilha, Carta* carta);
 Carta* _pilha_pop(Pilha* pilha);
@@ -28,15 +30,17 @@ void imprimePilha(Pilha* pilha);
 int isPilhaVazia(Pilha* pilha);
 int isPilhaCheia(Pilha* pilha);
 
-Pilha* cria_pilha_standart(void) {
+Pilha* cria_pilha_generica(int tamanho) {
     Pilha* pilha = (Pilha*)malloc(sizeof(Pilha));
 
     if (!pilha) {
-        printf("Erro: Nao foi possivel alocar memoria para a pilha standart!\nO programa sera encerrado!\n");
+        printf("Erro: Nao foi possivel alocar memoria para a pilha de %d cartas!\nO programa sera encerrado!\n", tamanho);
         exit(1);
     }
 
-    pilha->topo = 52;
+    pilha->topo = tamanho;
+    pilha->tamanho = tamanho;
+    pilha->cartas = (Pilha*)malloc(tamanho * sizeof(Pilha));
 
     pilha->push = _pilha_push;
     pilha->pop = _pilha_pop;
@@ -77,10 +81,12 @@ Carta* _pilha_pop(Pilha* pilha) {
 void _pilha_limpa(Pilha* pilha) {
     if ( !isPilhaVazia(pilha) ) {
         int i;
-        for (i = 0; i < pilha->topo; i++) {
+        int topo = pilha->topo;
+        for (i = 0; i < topo; i++) {
             Carta* carta = pilha->pop(pilha);
             free_carta(carta);
         }
+        pilha->topo = pilha->tamanho;
     }
 }
 
@@ -95,13 +101,13 @@ void imprimePilha(Pilha* pilha) {
 }
 
 int isPilhaVazia(Pilha* pilha) {
-    if (pilha->topo == 52)
+    if (pilha->topo == pilha->tamanho)
         return 1;
     return 0;
 }
 
 int isPilhaCheia(Pilha* pilha) {
-    if (pilha->topo == 51)
+    if (pilha->topo == pilha->tamanho-1)
         return 1;
     return 0;
 }

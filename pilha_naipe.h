@@ -39,7 +39,7 @@ Pilhas_Naipe* cria_pilhas_naipe(void) {
     int i;
     for (i = 0; i < 4; i++) {
         pilhas_naipe->naipes[i] = 4;
-        pilhas_naipe->pilha[i] = cria_pilha_standart();
+        pilhas_naipe->pilha[i] = cria_pilha_generica(52);
     }
 
     pilhas_naipe->push = _pilhas_naipe_push;

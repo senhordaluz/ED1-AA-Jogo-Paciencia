@@ -3,5 +3,11 @@
 		{
 			"path": "."
 		}
-	]
+	],
+	"settings": {
+		"files.associations": {
+			"pilha_naipe.h": "c",
+			"pilha_descarte.h": "c"
+		}
+	}
 }

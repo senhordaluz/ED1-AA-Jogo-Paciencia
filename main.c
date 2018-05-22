@@ -16,6 +16,9 @@ int main()
 
     Pilha* pilha_estoque = cria_pilha_estoque();
     imprimePilha(pilha_estoque);
+    printf("NOVA PILHA\n");
+    pilha_estoque->limpa(pilha_estoque);
+    imprimePilha(pilha_estoque);
     free_pilha(pilha_estoque);
 
     printf("Hello world!\n");
