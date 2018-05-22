@@ -21,11 +21,13 @@ static struct pilhas_fileira {
 
 Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque);
 static void preenche_pilhas_fileira(Pilhas_Fileira* pilhas_fileira, Pilha* pilha_estoque);
+static void reordena_topo(Pilhas_Fileira* pilhas_fileira, int fileira_id);
 static int movimentacao_valida(Pilha* pilha_destino, Carta* carta);
 static int _movimentacao_valida_naipe(Carta* carta_topo, Carta* nova_carta);
 static int _movimentacao_valida_valor(Carta* carta_topo, Carta* nova_carta);
 static void pilha_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_origem, int fileira_destino, int posicao_carta);
 static void pilha_fileira_push(Pilhas_Fileira* pilhas_fileira, int fileira_id, Carta* carta);
+static Carta* pilha_fileira_pop(Pilhas_Fileira* pilhas_fileira, int fileira_id);
 
 Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque) {
     if (pilha_estoque->topo != 51) {
@@ -49,6 +51,7 @@ Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque) {
     preenche_pilhas_fileira(pilhas_fileira, pilha_estoque);
 
     pilhas_fileira->push = pilha_fileira_push;
+    pilhas_fileira->pop = pilha_fileira_pop;
     pilhas_fileira->move = pilha_fileira_move;
 
     return pilhas_fileira;
@@ -89,6 +92,13 @@ static void preenche_pilhas_fileira(Pilhas_Fileira* pilhas_fileira, Pilha* pilha
     // Fileira 7
     for (i = 0; i < 7; i++) {
         pilhas_fileira->pilha[6]->push(pilhas_fileira->pilha[6], pilha_estoque->pop(pilha_estoque));
+    }
+}
+
+static void reordena_topo(Pilhas_Fileira* pilhas_fileira, int fileira_id) {
+    Pilha* pilha = pilhas_fileira->pilha[fileira_id];
+    if (pilhas_fileira->carta_virada[fileira_id] > pilha->topo) {
+        pilhas_fileira->carta_virada[fileira_id] = pilha->topo;
     }
 }
 
@@ -225,9 +235,7 @@ static void pilha_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_orige
     }
 
     // Acerta posição da carta virada
-    if (pilhas_fileira->carta_virada[fileira_origem] > pilha_origem->topo) {
-        pilhas_fileira->carta_virada[fileira_origem] = pilha_origem->topo;
-    }
+    reordena_topo(pilhas_fileira, fileira_origem);
 
     // Coloca cartas movidas na fileira de destino
     for (i = 0; i < total; i++) {
@@ -247,6 +255,15 @@ static void pilha_fileira_push(Pilhas_Fileira* pilhas_fileira, int fileira_id, C
     }
 
     pilha_destino->push(pilha_destino, carta);
+}
+
+static Carta* pilha_fileira_pop(Pilhas_Fileira* pilhas_fileira, int fileira_id) {
+    Pilha* pilha = pilhas_fileira->pilha[fileira_id];
+    Carta* carta = pilha->pop(pilha);
+
+    reordena_topo(pilhas_fileira, fileira_id);
+
+    return carta;
 }
 
 #endif // PILHA_FILEIRA_H_INCLUDED
