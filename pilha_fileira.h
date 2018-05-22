@@ -16,7 +16,7 @@ static struct pilhas_fileira {
     // Move cartas viradas de uma fileira para outra
     void (*move) (Pilhas_Fileira* self, int fileira_origem, int fileira_destino, int posicao_carta);
     // Limpa pilha
-    void (*limpa) (Pilhas_Fileira* self);
+    void (*limpa) (Pilhas_Fileira* self, Pilha* pilha_estoque);
 };
 
 Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque);
@@ -24,7 +24,8 @@ static void preenche_pilhas_fileira(Pilhas_Fileira* pilhas_fileira, Pilha* pilha
 static int movimentacao_valida(Pilha* pilha_destino, Carta* carta);
 static int _movimentacao_valida_naipe(Carta* carta_topo, Carta* nova_carta);
 static int _movimentacao_valida_valor(Carta* carta_topo, Carta* nova_carta);
-static void move(Pilhas_Fileira* pilhas_fileira, int fileira_origem, int fileira_destino, int posicao_carta);
+static void pilha_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_origem, int fileira_destino, int posicao_carta);
+static void pilha_fileira_push(Pilhas_Fileira* pilhas_fileira, int fileira_id, Carta* carta);
 
 Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque) {
     if (pilha_estoque->topo != 51) {
@@ -47,7 +48,8 @@ Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque) {
 
     preenche_pilhas_fileira(pilhas_fileira, pilha_estoque);
 
-    pilhas_fileira->move = move;
+    pilhas_fileira->push = pilha_fileira_push;
+    pilhas_fileira->move = pilha_fileira_move;
 
     return pilhas_fileira;
 }
@@ -194,7 +196,7 @@ static int _movimentacao_valida_valor(Carta* carta_topo, Carta* nova_carta) {
     }
 }
 
-static void move(Pilhas_Fileira* pilhas_fileira, int fileira_origem, int fileira_destino, int posicao_carta) {
+static void pilha_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_origem, int fileira_destino, int posicao_carta) {
     if ( posicao_carta < pilhas_fileira->carta_virada[fileira_origem] ) {
         printf("Posicao invalida!\n");
         return;
@@ -234,6 +236,17 @@ static void move(Pilhas_Fileira* pilhas_fileira, int fileira_origem, int fileira
     }
 
     free_pilha(pilha_auxiliar);
+}
+
+static void pilha_fileira_push(Pilhas_Fileira* pilhas_fileira, int fileira_id, Carta* carta) {
+    Pilha* pilha_destino = pilhas_fileira->pilha[fileira_id];
+
+    if ( !movimentacao_valida(pilha_destino, carta) ) {
+        printf("Movimentacao invalida!\n");
+        return;
+    }
+
+    pilha_destino->push(pilha_destino, carta);
 }
 
 #endif // PILHA_FILEIRA_H_INCLUDED
