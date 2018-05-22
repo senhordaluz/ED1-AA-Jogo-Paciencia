@@ -16,11 +16,13 @@ int main()
 
     Pilha* pilha_estoque = cria_pilha_estoque();
     imprimePilha(pilha_estoque);
-    printf("NOVA PILHA\n");
-    pilha_estoque->limpa(pilha_estoque);
-    imprimePilha(pilha_estoque);
-    free_pilha(pilha_estoque);
 
+
+    Pilhas_Fileira* pilhas_fileira = cria_pilhas_fileira(pilha_estoque);
+
+    free_pilha(pilha_estoque);
+    free_pilhas_fileira(pilhas_fileira);
+    
     printf("Hello world!\n");
     return 0;
 }
