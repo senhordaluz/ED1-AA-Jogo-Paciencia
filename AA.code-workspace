@@ -7,7 +7,9 @@
 	"settings": {
 		"files.associations": {
 			"pilha_naipe.h": "c",
-			"pilha_descarte.h": "c"
+			"pilha_descarte.h": "c",
+			"pilha_estoque.h": "c",
+			"carta.h": "c"
 		}
 	}
 }

@@ -37,6 +37,9 @@
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="paciencia.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="pilha.h">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
