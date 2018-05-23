@@ -4,11 +4,6 @@
 #include "pilha.h"
 #include "carta.h"
 
-#define ESPADA  0
-#define COPAS   1
-#define PAUS    2
-#define OURO    3
-
 typedef struct pilhas_naipe Pilhas_Naipe;
 static struct pilhas_naipe {
     int naipes[4];
@@ -18,6 +13,8 @@ static struct pilhas_naipe {
     void (*push) (Pilhas_Naipe* self, int naipe, Carta* carta);
     // Retira carta da pilha e retorna valor
     Carta* (*pop) (Pilhas_Naipe* self, int naipe);
+    // Verifica se as pilhas de naipe estao cheias
+    int (*cheia) (Pilhas_Naipe* self);
     // Limpa pilha
     void (*limpa) (Pilhas_Naipe* self);
 };
@@ -25,11 +22,13 @@ static struct pilhas_naipe {
 Pilhas_Naipe* cria_pilhas_naipe(void);
 void free_pilhas_naipe(Pilhas_Naipe* pilhas_naipe);
 static int isNaipeAlocado(Pilhas_Naipe* pilhas_naipe, int naipe);
-static void _pilhas_naipe_push(Pilhas_Naipe* pilhas_naipe, int naipe, Carta* carta);
-static Carta* _pilhas_naipe_pop(Pilhas_Naipe* pilhas_naipe, int naipe);
+static void pilhas_naipe_push(Pilhas_Naipe* pilhas_naipe, int naipe, Carta* carta);
+static Carta* pilhas_naipe_pop(Pilhas_Naipe* pilhas_naipe, int naipe);
 static int pilhas_naipe_movimentacao_valida(Pilha* pilha_destino, Carta* carta);
 static int pilhas_naipe_movimentacao_valida_naipe(Carta* carta_topo, Carta* nova_carta);
 static int pilhas_naipe_movimentacao_valida_valor(Carta* carta_topo, Carta* nova_carta);
+static int pilhas_naipe_limpa(Pilhas_Naipe* pilhas_naipe);
+static int pilhas_naipe_cheias(Pilhas_Naipe* pilhas_naipe);
 
 Pilhas_Naipe* cria_pilhas_naipe(void) {
     Pilhas_Naipe* pilhas_naipe = (Pilhas_Naipe*)malloc(sizeof(Pilhas_Naipe));
@@ -42,11 +41,13 @@ Pilhas_Naipe* cria_pilhas_naipe(void) {
     int i;
     for (i = 0; i < 4; i++) {
         pilhas_naipe->naipes[i] = 4;
-        pilhas_naipe->pilha[i] = cria_pilha_generica(52);
+        pilhas_naipe->pilha[i] = cria_pilha_generica(13);
     }
 
-    pilhas_naipe->push = _pilhas_naipe_push;
-    pilhas_naipe->pop = _pilhas_naipe_pop;
+    pilhas_naipe->push = pilhas_naipe_push;
+    pilhas_naipe->pop = pilhas_naipe_pop;
+    pilhas_naipe->cheia = pilhas_naipe_cheias;
+    pilhas_naipe->limpa = pilhas_naipe_limpa;
 
     return pilhas_naipe;
 }
@@ -59,55 +60,44 @@ void free_pilhas_naipe(Pilhas_Naipe* pilhas_naipe) {
     free(pilhas_naipe);
 }
 
-static int isNaipeAlocado(Pilhas_Naipe* pilhas_naipe, int naipe) {
-    if (pilhas_naipe->naipes[naipe] < 4)
+static int isNaipeAlocado(Pilhas_Naipe* pilhas_naipe, int pilha_id) {
+    if (pilhas_naipe->naipes[pilha_id] < 4)
         return 1;
     return 0;
 }
 
-static void _pilhas_naipe_push(Pilhas_Naipe* pilhas_naipe, int naipe, Carta* carta) {
-    if (naipe >= 4) {
-        printf("Id de pilha invalido!\n");
+static void pilhas_naipe_push(Pilhas_Naipe* pilhas_naipe, int pilha_id, Carta* carta) {
+    // Verifica se o id enviado e valido
+    if (pilha_id >= 4) {
+        printf("id de pilha invalido!\n");
         return;
     }
 
-    int isPilhaVazia = 0;
-
-    if (!isNaipeAlocado(pilhas_naipe, naipe)) {
-        int i;
-        int naipes_alocados = 0;
-        for (i = 0; i < 4; i++) {
-            if (pilhas_naipe->naipes[i] != 4)
-                naipes_alocados++;
-        }
-        switch (naipes_alocados) {
-            case 0:
-                pilhas_naipe->naipes[naipe] = 0;
-                break;
-            case 1:
-                pilhas_naipe->naipes[naipe] = 1;
-                break;
-            case 2:
-                pilhas_naipe->naipes[naipe] = 2;
-                break;
-            case 3:
-                pilhas_naipe->naipes[naipe] = 3;
-                break;
-        }
-        isPilhaVazia = 1;
-    }
-
-    Pilha* pilha = pilhas_naipe->pilha[pilhas_naipe->naipes[naipe]];
-
-    if ( !isPilhaVazia && pilhas_naipe_movimentacao_valida(pilha, carta) ) {
-        printf("Naipe invalido!\n");
+    // Verifica se o naipe ja foi alocado em outra pilha
+    if ( !isNaipeAlocado(pilhas_naipe, pilha_id) ) {
+        printf("Movimentacao invalida!\n");
         return;
     }
 
+    Pilha* pilha = pilhas_naipe->pilha[pilha_id];
+
+    // Verifica se a movimentacao e valida
+    if ( !pilhas_naipe_movimentacao_valida(pilha, carta) ) {
+        printf("Movimentacao invalida!\n");
+        return;
+    }
+
+    // Caso a movimentacao seja valida e a pilha esteja vazia, salva qual naipe esta pilha pertencera
+    if ( isPilhaVazia(pilha) ) {
+        int naipe = carta->getNaipe(carta);
+        pilhas_naipe->naipes[pilha_id] = naipe;
+    }
+
+    // Realiza o push
     pilha->push(pilha, carta);
 }
 
-static Carta* _pilhas_naipe_pop(Pilhas_Naipe* pilhas_naipe, int naipe) {
+static Carta* pilhas_naipe_pop(Pilhas_Naipe* pilhas_naipe, int naipe) {
     if (naipe >= 4) {
         printf("Pilha vazia ou ID inválido!\n");
         return NULL;
@@ -117,6 +107,12 @@ static Carta* _pilhas_naipe_pop(Pilhas_Naipe* pilhas_naipe, int naipe) {
 }
 
 static int pilhas_naipe_movimentacao_valida(Pilha* pilha_destino, Carta* carta) {
+    // Caso a pilha esteja vazia, a primeira carta deve ser o As
+    if ( isPilhaVazia(pilha_destino) )
+        if ( carta->valor == 'A' || carta->valor == 'a' )
+            return 1;
+
+    // Caso contratio, verifica sequencia ascendente
     Carta* carta_topo = pilha_destino->cartas[pilha_destino->topo];
     if (pilhas_naipe_movimentacao_valida_naipe(carta_topo, carta))
         return pilhas_naipe_movimentacao_valida_valor(carta_topo, carta);
@@ -214,5 +210,23 @@ static int pilhas_naipe_movimentacao_valida_valor(Carta* carta_topo, Carta* nova
             return 0;
             break;
     }
+}
+
+static int pilhas_naipe_limpa(Pilhas_Naipe* pilhas_naipe) {
+    int i;
+    for (i = 0; i < 4; i++) {
+        Pilha* pilha = pilhas_naipe->pilha[i];
+        pilha->limpa(pilha);
+    }
+}
+
+static int pilhas_naipe_cheias(Pilhas_Naipe* pilhas_naipe) {
+    int i;
+    for (i = 0; i < 4; i++) {
+        Pilha* pilha = pilhas_naipe->pilha[i];
+        if (!isPilhaCheia(pilha))
+            return 0;
+    }
+    return 1;
 }
 #endif // PILHA_NAIPE_H_INCLUDED
