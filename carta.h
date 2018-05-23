@@ -1,31 +1,41 @@
 #ifndef CARTA_H_INCLUDED
 #define CARTA_H_INCLUDED
 
+#define ESPADA  0
+#define COPAS   1
+#define PAUS    2
+#define OURO    3
+
 typedef struct carta Carta;
 typedef struct carta* PCarta;
 static struct carta {
     char valor;
     char naipe;
 
+    // Imprime a carta no console
     void (*print) (Carta* self);
+    // Altera valor da carta
     void (*change) (Carta* carta, char* valor);
+    // Retorna enum com naipe
+    int (*getNaipe) (Carta* carta);
 };
 
 Carta* nova_carta(char* valor);
 void free_carta(Carta* carta);
-static void _print(Carta* self);
-static void _troca(Carta* carta, char* valor);
-static int _isValorValido(char* valor);
+static void carta_print(Carta* self);
+static void carta_troca(Carta* carta, char* valor);
+static int carta_isValorValido(char* valor);
 
 Carta* nova_carta(char* valor) {
-    if ( _isValorValido(valor) ) {
+    if ( carta_isValorValido(valor) ) {
         Carta* carta = (Carta*) malloc(sizeof(Carta));
 
         carta->valor = valor[0];
         carta->naipe = valor[1];
 
-        carta->print = _print;
-        carta->change = _troca;
+        carta->print = carta_print;
+        carta->change = carta_troca;
+        carta->getNaipe = carta_getNaipe;
 
         if (!carta) {
             printf("Erro: Nao foi possivel alocar memoria para a Carta!\nO programa sera encerrado!\n");
@@ -42,7 +52,7 @@ void free_carta(Carta* carta) {
     free(carta);
 }
 
-static void _print(Carta* self) {
+static void carta_print(Carta* self) {
     int ch = 0;
     char *valor, *naipe;
     switch (self->valor) {
@@ -91,8 +101,8 @@ static void _print(Carta* self) {
         printf("%s de %s\n", valor, naipe);
 }
 
-static void _troca(Carta* carta, char valor[2]) {
-    if ( _isValorValido(valor) ) {
+static void carta_troca(Carta* carta, char valor[2]) {
+    if ( carta_isValorValido(valor) ) {
         carta->valor = valor[0];
         carta->naipe = valor[1];
         return;
@@ -100,7 +110,7 @@ static void _troca(Carta* carta, char valor[2]) {
     printf("Valor invalido\n");
 }
 
-static int _isValorValido(char* valor) {
+static int carta_isValorValido(char* valor) {
     int valor_valido = 0;
     int naipe_valido = 0;
 
@@ -142,6 +152,23 @@ static int _isValorValido(char* valor) {
     if (valor_valido && naipe_valido)
         return 1;
     return 0;
+}
+
+static int carta_getNaipe(Carta* carta) {
+    switch (carta->naipe) {
+        case 'E':
+        case 'e':
+            return ESPADA;
+        case 'C':
+        case 'c':
+            return COPAS;
+        case 'P':
+        case 'p':
+            return PAUS;
+        case 'O':
+        case 'o':
+            return OURO;
+    }
 }
 
 #endif // CARTA_H_INCLUDED
