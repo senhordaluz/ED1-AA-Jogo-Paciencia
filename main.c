@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "paciencia.h"
+
 #include "carta.h"
 #include "pilha.h"
 #include "pilha_estoque.h"
@@ -15,7 +17,7 @@ int main()
     free_carta(carta);
 
     Pilha* pilha_estoque = cria_pilha_estoque();
-    imprimePilha(pilha_estoque);  
+    imprimePilha(pilha_estoque);
     Pilhas_Fileira* pilhas_fileira = cria_pilhas_fileira(pilha_estoque);
     Pilhas_Naipe* pilhas_naipe = cria_pilhas_naipe();
     Pilha* pilha_descarte = cria_pilha_descarte();
