@@ -29,6 +29,8 @@ static void pilha_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_orige
 static void pilha_fileira_push(Pilhas_Fileira* pilhas_fileira, int fileira_id, Carta* carta);
 static Carta* pilha_fileira_pop(Pilhas_Fileira* pilhas_fileira, int fileira_id);
 static void pilha_fileira_limpa(Pilhas_Fileira* pilhas_fileira, Pilha* pilha_estoque);
+void pilhas_fileira_imprime_fileira(Pilhas_Fileira* pilhas_fileira, int fileira_id);
+void imprimePilhasFileira(Pilhas_Fileira* pilhas_fileira);
 
 Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque) {
     if (pilha_estoque->topo != 51) {
@@ -46,7 +48,6 @@ Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque) {
     int i;
     for (i = 0; i < 7; i++) {
         pilhas_fileira->pilha[i] = cria_pilha_generica(52);
-        pilhas_fileira->carta_virada[i] = i+1;
     }
 
     preenche_pilhas_fileira(pilhas_fileira, pilha_estoque);
@@ -69,32 +70,53 @@ void free_pilhas_fileira(Pilhas_Fileira* pilhas_fileira) {
 
 static void preenche_pilhas_fileira(Pilhas_Fileira* pilhas_fileira, Pilha* pilha_estoque) {
     int i;
+    Pilha* pilha;
     // Fileira 1
-    pilhas_fileira->pilha[0]->push(pilhas_fileira->pilha[0], pilha_estoque->pop(pilha_estoque));
+    pilha = pilhas_fileira->pilha[0];
+    pilha->push(pilhas_fileira->pilha[0], pilha_estoque->pop(pilha_estoque));
+    pilhas_fileira->carta_virada[0] = 0;
+
     // Fileira 2
+    pilha = pilhas_fileira->pilha[1];
     for (i = 0; i < 2; i++) {
-        pilhas_fileira->pilha[1]->push(pilhas_fileira->pilha[1], pilha_estoque->pop(pilha_estoque));
+        pilha->push(pilha, pilha_estoque->pop(pilha_estoque));
     }
+    pilhas_fileira->carta_virada[1] = 1;
+
     // Fileira 3
+    pilha = pilhas_fileira->pilha[2];
     for (i = 0; i < 3; i++) {
-        pilhas_fileira->pilha[2]->push(pilhas_fileira->pilha[2], pilha_estoque->pop(pilha_estoque));
+        pilha->push(pilha, pilha_estoque->pop(pilha_estoque));
     }
+    pilhas_fileira->carta_virada[2] = 2;
+
     // Fileira 4
+    pilha = pilhas_fileira->pilha[3];
     for (i = 0; i < 4; i++) {
-        pilhas_fileira->pilha[3]->push(pilhas_fileira->pilha[3], pilha_estoque->pop(pilha_estoque));
+        pilha->push(pilha, pilha_estoque->pop(pilha_estoque));
     }
+    pilhas_fileira->carta_virada[3] = 3;
+
     // Fileira 5
+    pilha = pilhas_fileira->pilha[4];
     for (i = 0; i < 5; i++) {
-        pilhas_fileira->pilha[4]->push(pilhas_fileira->pilha[4], pilha_estoque->pop(pilha_estoque));
+        pilha->push(pilha, pilha_estoque->pop(pilha_estoque));
     }
+    pilhas_fileira->carta_virada[4] = 4;
+
     // Fileira 6
+    pilha = pilhas_fileira->pilha[5];
     for (i = 0; i < 6; i++) {
-        pilhas_fileira->pilha[5]->push(pilhas_fileira->pilha[5], pilha_estoque->pop(pilha_estoque));
+        pilha->push(pilha, pilha_estoque->pop(pilha_estoque));
     }
+    pilhas_fileira->carta_virada[5] = 5;
+
     // Fileira 7
+    pilha = pilhas_fileira->pilha[6];
     for (i = 0; i < 7; i++) {
-        pilhas_fileira->pilha[6]->push(pilhas_fileira->pilha[6], pilha_estoque->pop(pilha_estoque));
+        pilha->push(pilha, pilha_estoque->pop(pilha_estoque));
     }
+    pilhas_fileira->carta_virada[6] = 6;
 }
 
 static void reordena_topo(Pilhas_Fileira* pilhas_fileira, int fileira_id) {
@@ -275,6 +297,30 @@ static void pilha_fileira_limpa(Pilhas_Fileira* pilhas_fileira, Pilha* pilha_est
         pilha->limpa(pilha);
     }
     preenche_pilhas_fileira(pilhas_fileira, pilha_estoque);
+}
+
+void pilhas_fileira_imprime_fileira(Pilhas_Fileira* pilhas_fileira, int fileira_id) {
+    if (fileira_id >= 7) {
+        printf("Fileira inválida!\n");
+        return;
+    }
+
+    Pilha* pilha = pilhas_fileira->pilha[fileira_id];
+
+    int i;
+    int carta_virada = pilhas_fileira->carta_virada[fileira_id];
+    for (i = carta_virada; i <= pilha->topo; i++) {
+        Carta* carta = pilha->cartas[i];
+        carta->print(carta);
+    }
+}
+
+void imprimePilhasFileira(Pilhas_Fileira* pilhas_fileira) {
+    int i;
+    for (i = 0; i < 7; i++) {
+        printf("Fileira %d!\n", i+1);
+        pilhas_fileira_imprime_fileira(pilhas_fileira, i);
+    }
 }
 
 #endif // PILHA_FILEIRA_H_INCLUDED
