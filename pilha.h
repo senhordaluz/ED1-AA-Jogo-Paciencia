@@ -19,6 +19,8 @@ static struct pilha {
     Carta* (*pop) (Pilha* self);
     // Limpa pilha
     void (*limpa) (Pilha* self);
+    // Monta string da pilha
+    void (*toString) (Pilha* self, char* string);
 };
 
 Pilha* cria_pilha_generica(int tamanho);
@@ -29,6 +31,7 @@ void pilha_limpa(Pilha* pilha);
 void imprimePilha(Pilha* pilha);
 int isPilhaVazia(Pilha* pilha);
 int isPilhaCheia(Pilha* pilha);
+static void pilha_toString(Pilha* pilha, char* string);
 
 Pilha* cria_pilha_generica(int tamanho) {
     Pilha* pilha = (Pilha*)malloc(sizeof(Pilha));
@@ -45,6 +48,7 @@ Pilha* cria_pilha_generica(int tamanho) {
     pilha->push = pilha_push;
     pilha->pop = pilha_pop;
     pilha->limpa = pilha_limpa;
+    pilha->toString = pilha_toString;
 
     return pilha;
 }
@@ -90,13 +94,10 @@ void pilha_limpa(Pilha* pilha) {
 }
 
 void imprimePilha(Pilha* pilha) {
-    if ( !isPilhaVazia(pilha) ) {
-        int i;
-        for (i = 0; i <= pilha->topo; i++) {
-            Carta* carta = pilha->cartas[i];
-            carta->print(carta);
-        }
-    }
+    char string[600];
+    pilha->toString(pilha, string);
+    printf("%s", string);
+    return;
 }
 
 int isPilhaVazia(Pilha* pilha) {
@@ -109,6 +110,21 @@ int isPilhaCheia(Pilha* pilha) {
     if (pilha->topo == pilha->tamanho-1)
         return 1;
     return 0;
+}
+
+static void pilha_toString(Pilha* pilha, char* string) {
+    strcpy(string, "");
+    if ( !isPilhaVazia(pilha) ) {
+        int i;
+        char cartaString[20];
+        for (i = 0; i <= pilha->topo; i++) {
+            Carta* carta = pilha->cartas[i];
+            carta->toString(carta, cartaString);
+            strcat(cartaString, "\n");
+            strcat(string, cartaString);
+        }
+    }
+    return string;
 }
 
 #endif // PILHA_H_INCLUDED

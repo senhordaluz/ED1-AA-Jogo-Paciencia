@@ -21,7 +21,7 @@ static struct carta {
     // Retorna enum com naipe
     int (*getNaipe) (Carta* self);
     // Retorna string
-    char (*toString) (Carta* self, char* string)
+    void (*toString) (Carta* self, char* string)
 };
 
 Carta* nova_carta(char* valor);
@@ -30,7 +30,7 @@ static void carta_print(Carta* self);
 static void carta_troca(Carta* carta, char* valor);
 static int carta_isValorValido(char* valor);
 static int carta_getNaipe(Carta* carta);
-static char* carta_toString(Carta* carta, char* string);
+static void carta_toString(Carta* carta, char* string);
 
 Carta* nova_carta(char* valor) {
     if ( carta_isValorValido(valor) ) {
@@ -60,52 +60,9 @@ void free_carta(Carta* carta) {
 }
 
 static void carta_print(Carta* carta) {
-    int ch = 0;
-    char *valor, *naipe;
-    switch (carta->valor) {
-        case 'A':
-        case 'a':
-            valor = "As";
-            break;
-        case 'J':
-        case 'j':
-            valor = "Valete";
-            break;
-        case 'K':
-        case 'k':
-            valor = "Rei";
-            break;
-        case 'Q':
-        case 'q':
-            valor = "Dama";
-            break;
-        default:
-            ch = 1;
-            valor = carta->valor;
-            break;
-    }
-    switch (carta->naipe) {
-        case 'E':
-        case 'e':
-            naipe = "espada";
-            break;
-        case 'C':
-        case 'c':
-            naipe = "copas";
-            break;
-        case 'P':
-        case 'p':
-            naipe = "paus";
-            break;
-        case 'O':
-        case 'o':
-            naipe = "ouro";
-            break;
-    }
-    if (ch)
-        printf("%c de %s\n", valor, naipe);
-    else
-        printf("%s de %s\n", valor, naipe);
+    char string[20];
+    carta->toString(carta, string);
+    puts(string);
 }
 
 static void carta_troca(Carta* carta, char valor[2]) {
@@ -178,7 +135,7 @@ static int carta_getNaipe(Carta* carta) {
     }
 }
 
-static char* carta_toString(Carta* carta, char* string) {
+static void carta_toString(Carta* carta, char* string) {
     strcpy(string, "");
     switch (carta->valor) {
         case 'A':
@@ -243,8 +200,6 @@ static char* carta_toString(Carta* carta, char* string) {
             strcat(string, " de ouro");
             break;
     }
-
-    return (string);
 }
 
 #endif // CARTA_H_INCLUDED

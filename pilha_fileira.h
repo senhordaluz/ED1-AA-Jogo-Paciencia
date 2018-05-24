@@ -1,6 +1,8 @@
 #ifndef PILHA_FILEIRA_H_INCLUDED
 #define PILHA_FILEIRA_H_INCLUDED
 
+#include <string.h>
+
 #include "pilha.h"
 #include "carta.h"
 
@@ -21,6 +23,8 @@ static struct pilhas_fileira {
     void (*limpa) (Pilhas_Fileira* self, Pilha* pilha_estoque);
     // Verifica se as pilhas estao vazias
     int (*isVazia) (Pilhas_Fileira* self);
+    // Monta string
+    void (*toString) (Pilhas_Fileira* self, char* string);
 };
 
 Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque);
@@ -37,6 +41,8 @@ static void pilhas_fileira_limpa(Pilhas_Fileira* pilhas_fileira, Pilha* pilha_es
 void pilhas_fileira_imprime_fileira(Pilhas_Fileira* pilhas_fileira, int fileira_id);
 void imprimePilhasFileira(Pilhas_Fileira* pilhas_fileira);
 static int pilhas_fileira_isVazia(Pilhas_Fileira* pilhas_fileira);
+static int pilhas_fileira_maior_pilha_id(Pilhas_Fileira* pilhas_fileira);
+static void pilhas_fileira_toString(Pilhas_Fileira* pilhas_fileira, char* string);
 
 Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque) {
     if (pilha_estoque->topo != 51) {
@@ -64,6 +70,7 @@ Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque) {
     pilhas_fileira->move = pilhas_fileira_move;
     pilhas_fileira->limpa = pilhas_fileira_limpa;
     pilhas_fileira->isVazia = pilhas_fileira_isVazia;
+    pilhas_fileira->toString = pilhas_fileira_toString;
 
     return pilhas_fileira;
 }
@@ -351,6 +358,91 @@ static int pilhas_fileira_isVazia(Pilhas_Fileira* pilhas_fileira) {
             return 0;
     }
     return 1;
+}
+
+static int pilhas_fileira_maior_pilha_id(Pilhas_Fileira* pilhas_fileira) {
+    int i;
+    int maior_pilha_id = 0;
+    for (i = 0; i < 7; i++)
+        if (pilhas_fileira->pilha[i]->topo > pilhas_fileira->pilha[maior_pilha_id]->topo)
+            maior_pilha_id = i;
+    return maior_pilha_id;
+}
+
+static void pilhas_fileira_toString(Pilhas_Fileira* pilhas_fileira, char* string) {
+    strcpy(string, "");
+
+    // Por algum motivo bizarro esse cara ta perdendo o ponteiro
+    Carta* corecao_de_ponteiro = pilhas_fileira->pilha[1]->cartas[1];
+
+    // Monta Cabecalho
+    int i;
+    for (i = 0; i < 7; i++) {
+        char buffer[25] = "";
+        if ( i == 0 )
+            snprintf(buffer, 25, " | Fileira %d       | ", i+1);
+        else if ( i < 6 )
+            snprintf(buffer, 25, "Fileira %d       | ", i+1);
+        else
+            snprintf(buffer, 25, "Fileira %d       |\n", i+1);
+        strcat(string, buffer);
+    }
+
+    int maior_pilha_id = pilhas_fileira_maior_pilha_id(pilhas_fileira);
+    int maior_topo_de_pilha = pilhas_fileira->pilha[maior_pilha_id]->topo;
+    for (i = 0; i <= maior_topo_de_pilha; i++) {
+        int j;
+        for (j = 0; j < 7; j++) {
+            Pilha* pilha = pilhas_fileira->pilha[j];
+            // Por algum motivo bizarro esse cara ta perdendo o ponteiro
+            if ( i == 1 && j == 1 )
+                pilha->cartas[i] = corecao_de_ponteiro;
+            
+            Carta* carta = pilha->cartas[i];
+            int topo_de_pilha = pilha->topo;
+            if ( !carta && topo_de_pilha < maior_topo_de_pilha ) {
+                if ( j == 0 )
+                    strcat(string, " |                 | ");
+                else
+                    strcat(string, "                | ");
+            } else {
+                char buffer[25] = "";
+                int carta_virada = pilhas_fileira->carta_virada[j];
+                if (i < carta_virada ) {
+                    if ( j == 0 )
+                        strcat(buffer, " | Carta Virada    | ");
+                    else if ( j < 6 )
+                        strcat(buffer, "Carta Virada    | ");
+                    else
+                        strcat(buffer, "Carta Virada    |\n");
+                } else {
+                    carta->toString(carta, buffer);
+                    int tamanho = 17 - strlen(buffer);
+                    int k;
+                    for (k = tamanho; k >= 0; k--) {
+                        if (k == 1)
+                            strcat(buffer, "|");
+                        else if (k ==0 ) {
+                            if ( j < 6 )
+                                strcat(buffer, " ");
+                            else
+                                strcat(buffer, "\n");
+                        }
+                        else
+                            strcat(buffer, " ");
+                    }
+                    if ( j == 0 ) {
+                        char buffer2[25] = " | ";
+                        strcat(buffer2, buffer);
+                        strcpy(buffer, buffer2);
+                    }
+
+                }
+                strcat(string, buffer);
+            }
+
+        }
+    }
 }
 
 #endif // PILHA_FILEIRA_H_INCLUDED
