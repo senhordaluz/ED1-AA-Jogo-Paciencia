@@ -195,4 +195,14 @@ static int paciencia_movimento2(Paciencia* paciencia, int fileira_id, int pilha_
     return 1;
 }
 
+/**
+ * Movimento 3:
+ *  "Retirar n cartas que estejam viradas para cima em uma pilha de fileira e transporta-las para uma outra fileira. (este movimento pode virar a carta do novo topo)."
+ */
+static int paciencia_movimento3(Paciencia* paciencia, int fileira_origem_id, int fileira_destino_id, int posicao_carta) {
+    Pilhas_Fileira* pilhas_fileira = paciencia->pilhas_fileira;
+
+    return pilhas_fileira->move(pilhas_fileira, fileira_origem_id, fileira_destino_id, posicao_carta);
+}
+
 #endif // PACIENCIA_H_INCLUDED

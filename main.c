@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "paciencia.h"
 
 int main()
 {
+
     Paciencia* paciencia = inicializa_jogo_paciencia();
 
     imprimePilhasFileira(paciencia->pilhas_fileira);
@@ -17,6 +19,8 @@ int main()
     while (jogoRodando) {
         count++;
         printf("FOI: %d\n", count);
+
+        pilha_estoque_mostra_topo(paciencia->pilha_estoque);
 
         // Testando movimento 1
         printf("Testando movimento 1:\n");
@@ -40,8 +44,24 @@ int main()
         printf("Pilha Fileira:\n");
         imprimePilha(paciencia->pilhas_fileira->pilha[3]);
 
+        // Testando movimento 3
+        printf("Testando movimento 3:\n");
+        printf("Sucesso movimento 3: %d\n", paciencia_movimento3(paciencia, 2, 3, 1));
+        imprimePilhasFileira(paciencia->pilhas_fileira);
+
         paciencia->finaliza(paciencia, &jogoRodando);
     }
+
+    char string[20];
+    Carta* carta = nova_carta("AP");
+    carta->toString(carta, string);
+    printf("Carta to string: %s\n", string);
+    free_carta(carta);
+
+    carta = nova_carta("1C");
+    carta->toString(carta, string);
+    printf("Carta to string: %s\n", string);
+    free_carta(carta);
 
     printf("Hello world!\n");
     return 0;

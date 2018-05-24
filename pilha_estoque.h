@@ -113,4 +113,9 @@ static void pilha_estoque_limpa(Pilha* pilha) {
     embaralhar(pilha);
 }
 
+static void pilha_estoque_mostra_topo(Pilha* pilha) {
+    Carta* carta = pilha->cartas[pilha->topo];
+    carta->print(carta);
+}
+
 #endif // PILHA_ESTOQUE_H_INCLUDED

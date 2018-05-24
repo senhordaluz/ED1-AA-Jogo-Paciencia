@@ -1,6 +1,8 @@
 #ifndef CARTA_H_INCLUDED
 #define CARTA_H_INCLUDED
 
+#include <string.h>
+
 #define ESPADA  0
 #define COPAS   1
 #define PAUS    2
@@ -15,9 +17,11 @@ static struct carta {
     // Imprime a carta no console
     void (*print) (Carta* self);
     // Altera valor da carta
-    void (*change) (Carta* carta, char* valor);
+    void (*change) (Carta* self, char* valor);
     // Retorna enum com naipe
-    int (*getNaipe) (Carta* carta);
+    int (*getNaipe) (Carta* self);
+    // Retorna string
+    char (*toString) (Carta* self, char* string)
 };
 
 Carta* nova_carta(char* valor);
@@ -26,10 +30,16 @@ static void carta_print(Carta* self);
 static void carta_troca(Carta* carta, char* valor);
 static int carta_isValorValido(char* valor);
 static int carta_getNaipe(Carta* carta);
+static char* carta_toString(Carta* carta, char* string);
 
 Carta* nova_carta(char* valor) {
     if ( carta_isValorValido(valor) ) {
         Carta* carta = (Carta*) malloc(sizeof(Carta));
+
+        if (!carta) {
+            printf("Erro: Nao foi possivel alocar memoria para a Carta!\nO programa sera encerrado!\n");
+            exit(1);
+        }
 
         carta->valor = valor[0];
         carta->naipe = valor[1];
@@ -37,11 +47,7 @@ Carta* nova_carta(char* valor) {
         carta->print = carta_print;
         carta->change = carta_troca;
         carta->getNaipe = carta_getNaipe;
-
-        if (!carta) {
-            printf("Erro: Nao foi possivel alocar memoria para a Carta!\nO programa sera encerrado!\n");
-            exit(1);
-        }
+        carta->toString = carta_toString;
 
         return carta;
     }
@@ -53,10 +59,10 @@ void free_carta(Carta* carta) {
     free(carta);
 }
 
-static void carta_print(Carta* self) {
+static void carta_print(Carta* carta) {
     int ch = 0;
     char *valor, *naipe;
-    switch (self->valor) {
+    switch (carta->valor) {
         case 'A':
         case 'a':
             valor = "As";
@@ -75,10 +81,10 @@ static void carta_print(Carta* self) {
             break;
         default:
             ch = 1;
-            valor = self->valor;
+            valor = carta->valor;
             break;
     }
-    switch (self->naipe) {
+    switch (carta->naipe) {
         case 'E':
         case 'e':
             naipe = "espada";
@@ -170,6 +176,75 @@ static int carta_getNaipe(Carta* carta) {
         case 'o':
             return OURO;
     }
+}
+
+static char* carta_toString(Carta* carta, char* string) {
+    strcpy(string, "");
+    switch (carta->valor) {
+        case 'A':
+        case 'a':
+            strcat(string, "As");
+            break;
+        case 'J':
+        case 'j':
+            strcat(string, "Valete");
+            break;
+        case 'K':
+        case 'k':
+            strcat(string, "Rei");
+            break;
+        case 'Q':
+        case 'q':
+            strcat(string, "Dama");
+            break;
+        case '1':
+            strcat(string, "1");
+            break;
+        case '2':
+            strcat(string, "2");
+            break;
+        case '3':
+            strcat(string, "3");
+            break;
+        case '4':
+            strcat(string, "4");
+            break;
+        case '5':
+            strcat(string, "5");
+            break;
+        case '6':
+            strcat(string, "6");
+            break;
+        case '7':
+            strcat(string, "7");
+            break;
+        case '8':
+            strcat(string, "8");
+            break;
+        case '9':
+            strcat(string, "9");
+            break;
+    }
+    switch (carta->naipe) {
+        case 'E':
+        case 'e':
+            strcat(string, " de espada");
+            break;
+        case 'C':
+        case 'c':
+            strcat(string, " de copas");
+            break;
+        case 'P':
+        case 'p':
+            strcat(string, " de paus");
+            break;
+        case 'O':
+        case 'o':
+            strcat(string, " de ouro");
+            break;
+    }
+
+    return (string);
 }
 
 #endif // CARTA_H_INCLUDED

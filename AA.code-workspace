@@ -10,7 +10,8 @@
 			"pilha_descarte.h": "c",
 			"pilha_estoque.h": "c",
 			"carta.h": "c",
-			"pilha.h": "c"
+			"pilha.h": "c",
+			"stdlib.h": "c"
 		}
 	}
 }
