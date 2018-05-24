@@ -13,8 +13,8 @@ static struct pilha {
     // Total de cartas
     int tamanho;
 
-    // Adiciona nova carta
-    void (*push) (Pilha* self, Carta* carta);
+    // Adiciona nova carta retorna 1: sucesso 0: erro
+    int (*push) (Pilha* self, Carta* carta);
     // Retira carta da pilha e retorna valor
     Carta* (*pop) (Pilha* self);
     // Limpa pilha
@@ -23,9 +23,9 @@ static struct pilha {
 
 Pilha* cria_pilha_generica(int tamanho);
 void free_pilha(Pilha* pilha);
-void _pilha_push(Pilha* pilha, Carta* carta);
-Carta* _pilha_pop(Pilha* pilha);
-void _pilha_limpa(Pilha* pilha);
+static int pilha_push(Pilha* pilha, Carta* carta);
+static Carta* pilha_pop(Pilha* pilha);
+void pilha_limpa(Pilha* pilha);
 void imprimePilha(Pilha* pilha);
 int isPilhaVazia(Pilha* pilha);
 int isPilhaCheia(Pilha* pilha);
@@ -42,32 +42,32 @@ Pilha* cria_pilha_generica(int tamanho) {
     pilha->tamanho = tamanho;
     pilha->cartas = (Pilha*)malloc(tamanho * sizeof(Pilha));
 
-    pilha->push = _pilha_push;
-    pilha->pop = _pilha_pop;
-    pilha->limpa = _pilha_limpa;
+    pilha->push = pilha_push;
+    pilha->pop = pilha_pop;
+    pilha->limpa = pilha_limpa;
 
     return pilha;
 }
 
 void free_pilha(Pilha* pilha) {
-    _pilha_limpa(pilha);
+    pilha_limpa(pilha);
     free(pilha);
 }
 
-void _pilha_push(Pilha* pilha, Carta* carta) {
+static int pilha_push(Pilha* pilha, Carta* carta) {
     if (!isPilhaCheia(pilha)) {
         if (isPilhaVazia(pilha))
             pilha->topo = 0;
         else
             pilha->topo++;
         pilha->cartas[pilha->topo] = carta;
-        return;
+        return 1;
     }
     printf("Pilha cheia!\n");
-    return;
+    return 0;
 }
 
-Carta* _pilha_pop(Pilha* pilha) {
+static Carta* pilha_pop(Pilha* pilha) {
     if (!isPilhaVazia(pilha)) {
         Carta* carta = pilha->cartas[pilha->topo];
         pilha->cartas[pilha->topo] = NULL;
@@ -78,7 +78,7 @@ Carta* _pilha_pop(Pilha* pilha) {
     return NULL;
 }
 
-void _pilha_limpa(Pilha* pilha) {
+void pilha_limpa(Pilha* pilha) {
     if ( !isPilhaVazia(pilha) ) {
         int i;
         int topo = pilha->topo;
@@ -91,11 +91,11 @@ void _pilha_limpa(Pilha* pilha) {
 }
 
 void imprimePilha(Pilha* pilha) {
-    pilha->cartas[pilha->topo]->print(pilha->cartas[pilha->topo]);
     if ( !isPilhaVazia(pilha) ) {
         int i;
         for (i = 0; i < pilha->topo; i++) {
-            pilha->cartas[i]->print(pilha->cartas[i]);
+            Carta* carta = pilha->cartas[i];
+            carta->print(carta);
         }
     }
 }

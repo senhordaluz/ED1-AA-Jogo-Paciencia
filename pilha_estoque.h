@@ -7,7 +7,7 @@
 Pilha* cria_pilha_estoque(void);
 static void cria_baralho_ordenado(Pilha* pilha);
 static void embaralhar(Pilha* pilha);
-static void _pilha_estoque_limpa(Pilha* pilha);
+static void pilha_estoque_limpa(Pilha* pilha);
 
 Pilha* cria_pilha_estoque(void) {
     // Pilha* pilha = (Pilha*) malloc(sizeof(Pilha));
@@ -26,7 +26,7 @@ Pilha* cria_pilha_estoque(void) {
 
     Pilha* pilha = cria_pilha_generica(52);
 
-    pilha->limpa = _pilha_estoque_limpa;
+    pilha->limpa = pilha_estoque_limpa;
 
     cria_baralho_ordenado(pilha);
     embaralhar(pilha);
@@ -107,8 +107,8 @@ static void embaralhar(Pilha* pilha) {
     }
 }
 
-static void _pilha_estoque_limpa(Pilha* pilha) {
-    _pilha_limpa(pilha);
+static void pilha_estoque_limpa(Pilha* pilha) {
+    pilha_limpa(pilha);
     cria_baralho_ordenado(pilha);
     embaralhar(pilha);
 }

@@ -1,24 +1,19 @@
 # depslib dependency file v1.0
-1527033201 source:w:\c\ed1\aa\main.c
+1527122515 source:w:\c\ed1\aa\main.c
 	<stdio.h>
 	<stdlib.h>
-	"carta.h"
-	"pilha.h"
-	"pilha_estoque.h"
-	"pilha_naipe.h"
-	"pilha_descarte.h"
-	"pilha_fileira.h"
+	"paciencia.h"
 
-1527029503 w:\c\ed1\aa\carta.h
+1527118866 w:\c\ed1\aa\carta.h
 
-1527027789 w:\c\ed1\aa\pilha_estoque.h
+1527120126 w:\c\ed1\aa\pilha_estoque.h
 	"pilha.h"
 	"carta.h"
 
-1527033323 w:\c\ed1\aa\pilha.h
+1527122614 w:\c\ed1\aa\pilha.h
 	"carta.h"
 
-1527032277 w:\c\ed1\aa\pilha_naipe.h
+1527122075 w:\c\ed1\aa\pilha_naipe.h
 	"pilha.h"
 	"carta.h"
 
@@ -26,7 +21,15 @@
 	"pilha.h"
 	"carta.h"
 
-1527034047 w:\c\ed1\aa\pilha_fileira.h
+1527120284 w:\c\ed1\aa\pilha_fileira.h
 	"pilha.h"
 	"carta.h"
+
+1527122453 w:\c\ed1\aa\paciencia.h
+	"carta.h"
+	"pilha.h"
+	"pilha_estoque.h"
+	"pilha_naipe.h"
+	"pilha_descarte.h"
+	"pilha_fileira.h"
 

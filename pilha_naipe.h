@@ -10,7 +10,7 @@ static struct pilhas_naipe {
     PPilha pilha[4];
 
     // Adiciona nova carta
-    void (*push) (Pilhas_Naipe* self, int naipe, Carta* carta);
+    int (*push) (Pilhas_Naipe* self, int pilha_id, Carta* carta);
     // Retira carta da pilha e retorna valor
     Carta* (*pop) (Pilhas_Naipe* self, int naipe);
     // Verifica se as pilhas de naipe estao cheias
@@ -21,8 +21,9 @@ static struct pilhas_naipe {
 
 Pilhas_Naipe* cria_pilhas_naipe(void);
 void free_pilhas_naipe(Pilhas_Naipe* pilhas_naipe);
-static int isNaipeAlocado(Pilhas_Naipe* pilhas_naipe, int naipe);
-static void pilhas_naipe_push(Pilhas_Naipe* pilhas_naipe, int naipe, Carta* carta);
+static int isNaipeAlocado(Pilhas_Naipe* pilhas_naipe);
+static int isNaipeAlocado_outraPilha(Pilhas_Naipe* pilhas_naipe, int pilha_id);
+static int pilhas_naipe_push(Pilhas_Naipe* pilhas_naipe, int naipe, Carta* carta);
 static Carta* pilhas_naipe_pop(Pilhas_Naipe* pilhas_naipe, int naipe);
 static int pilhas_naipe_movimentacao_valida(Pilha* pilha_destino, Carta* carta);
 static int pilhas_naipe_movimentacao_valida_naipe(Carta* carta_topo, Carta* nova_carta);
@@ -60,32 +61,48 @@ void free_pilhas_naipe(Pilhas_Naipe* pilhas_naipe) {
     free(pilhas_naipe);
 }
 
-static int isNaipeAlocado(Pilhas_Naipe* pilhas_naipe, int pilha_id) {
-    if (pilhas_naipe->naipes[pilha_id] < 4)
-        return 1;
+static int isNaipeAlocado(Pilhas_Naipe* pilhas_naipe) {
+    int i;
+    for (i = 0; i < 4; i++) {
+        if ( pilhas_naipe->naipes[i] != 4 )
+            return 1;
+    }
     return 0;
 }
 
-static void pilhas_naipe_push(Pilhas_Naipe* pilhas_naipe, int pilha_id, Carta* carta) {
+static int isNaipeAlocado_outraPilha(Pilhas_Naipe* pilhas_naipe, int pilha_id) {
+    int i;
+    for (i = 0; i < 4; i++) {
+        if ( i == pilha_id )
+            continue;
+        if ( pilhas_naipe->naipes[i] != 4 )
+            return 1;
+    }
+    return 0;
+}
+
+static int pilhas_naipe_push(Pilhas_Naipe* pilhas_naipe, int pilha_id, Carta* carta) {
     // Verifica se o id enviado e valido
     if (pilha_id >= 4) {
         printf("id de pilha invalido!\n");
-        return;
+        return 0;
     }
 
     // Verifica se o naipe ja foi alocado em outra pilha
-    if ( !isNaipeAlocado(pilhas_naipe, pilha_id) ) {
-        printf("Movimentacao invalida!\n");
-        return;
+    if ( isNaipeAlocado_outraPilha(pilhas_naipe, pilha_id) ) {
+        printf("Movimento invalido!\n");
+        return 0;
     }
 
     Pilha* pilha = pilhas_naipe->pilha[pilha_id];
 
     // Verifica se a movimentacao e valida
     if ( !pilhas_naipe_movimentacao_valida(pilha, carta) ) {
-        printf("Movimentacao invalida!\n");
-        return;
+        printf("Movimento invalido!\n");
+        return 0;
     }
+
+    printf("foi\n");
 
     // Caso a movimentacao seja valida e a pilha esteja vazia, salva qual naipe esta pilha pertencera
     if ( isPilhaVazia(pilha) ) {
@@ -93,8 +110,10 @@ static void pilhas_naipe_push(Pilhas_Naipe* pilhas_naipe, int pilha_id, Carta* c
         pilhas_naipe->naipes[pilha_id] = naipe;
     }
 
+    printf("alovou\n");
+
     // Realiza o push
-    pilha->push(pilha, carta);
+    return pilha->push(pilha, carta);
 }
 
 static Carta* pilhas_naipe_pop(Pilhas_Naipe* pilhas_naipe, int naipe) {
@@ -108,10 +127,13 @@ static Carta* pilhas_naipe_pop(Pilhas_Naipe* pilhas_naipe, int naipe) {
 
 static int pilhas_naipe_movimentacao_valida(Pilha* pilha_destino, Carta* carta) {
     // Caso a pilha esteja vazia, a primeira carta deve ser o As
-    if ( isPilhaVazia(pilha_destino) )
+    if ( isPilhaVazia(pilha_destino) ) {
         if ( carta->valor == 'A' || carta->valor == 'a' )
             return 1;
-
+        else
+            return 0;
+    }
+    
     // Caso contratio, verifica sequencia ascendente
     Carta* carta_topo = pilha_destino->cartas[pilha_destino->topo];
     if (pilhas_naipe_movimentacao_valida_naipe(carta_topo, carta))
@@ -125,22 +147,18 @@ static int pilhas_naipe_movimentacao_valida_naipe(Carta* carta_topo, Carta* nova
             if (nova_carta->naipe == 'E' || nova_carta->naipe == 'e')
                 return 1;
             return 0;
-            break;
         case 'P': case 'p':
             if (nova_carta->naipe == 'P' || nova_carta->naipe == 'p')
                 return 1;
             return 0;
-            break;
         case 'C': case 'c':
             if (nova_carta->naipe == 'C' || nova_carta->naipe == 'c')
                 return 1;
             return 0;
-            break;
         case 'O': case 'o':
             if (nova_carta->naipe == 'O' || nova_carta->naipe == 'o')
                 return 1;
             return 0;
-            break;
     }
 }
 

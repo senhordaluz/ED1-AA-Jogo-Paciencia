@@ -10,13 +10,15 @@ static struct pilhas_fileira {
     PPilha pilha[7];
 
     // Adiciona nova carta
-    void (*push) (Pilhas_Fileira* self, int fileira_id, Carta* carta);
+    int (*push) (Pilhas_Fileira* self, int fileira_id, Carta* carta);
     // Retira carta da pilha e retorna valor
     Carta* (*pop) (Pilhas_Fileira* self, int fileira_id);
     // Move cartas viradas de uma fileira para outra
     void (*move) (Pilhas_Fileira* self, int fileira_origem, int fileira_destino, int posicao_carta);
     // Limpa pilha
     void (*limpa) (Pilhas_Fileira* self, Pilha* pilha_estoque);
+    // Verifica se as pilhas estao vazias
+    int (*isVazia) (Pilhas_Fileira* self);
 };
 
 Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque);
@@ -25,12 +27,13 @@ static void reordena_topo(Pilhas_Fileira* pilhas_fileira, int fileira_id);
 static int pilha_fileira_movimentacao_valida(Pilha* pilha_destino, Carta* carta);
 static int pilha_fileira_movimentacao_valida_naipe(Carta* carta_topo, Carta* nova_carta);
 static int pilha_fileira_movimentacao_valida_valor(Carta* carta_topo, Carta* nova_carta);
-static void pilha_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_origem, int fileira_destino, int posicao_carta);
-static void pilha_fileira_push(Pilhas_Fileira* pilhas_fileira, int fileira_id, Carta* carta);
-static Carta* pilha_fileira_pop(Pilhas_Fileira* pilhas_fileira, int fileira_id);
-static void pilha_fileira_limpa(Pilhas_Fileira* pilhas_fileira, Pilha* pilha_estoque);
+static void pilhas_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_origem, int fileira_destino, int posicao_carta);
+static int pilhas_fileira_push(Pilhas_Fileira* pilhas_fileira, int fileira_id, Carta* carta);
+static Carta* pilhas_fileira_pop(Pilhas_Fileira* pilhas_fileira, int fileira_id);
+static void pilhas_fileira_limpa(Pilhas_Fileira* pilhas_fileira, Pilha* pilha_estoque);
 void pilhas_fileira_imprime_fileira(Pilhas_Fileira* pilhas_fileira, int fileira_id);
 void imprimePilhasFileira(Pilhas_Fileira* pilhas_fileira);
+static int pilhas_fileira_isVazia(Pilhas_Fileira* pilhas_fileira);
 
 Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque) {
     if (pilha_estoque->topo != 51) {
@@ -52,10 +55,11 @@ Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque) {
 
     preenche_pilhas_fileira(pilhas_fileira, pilha_estoque);
 
-    pilhas_fileira->push = pilha_fileira_push;
-    pilhas_fileira->pop = pilha_fileira_pop;
-    pilhas_fileira->move = pilha_fileira_move;
-    pilhas_fileira->limpa = pilha_fileira_limpa;
+    pilhas_fileira->push = pilhas_fileira_push;
+    pilhas_fileira->pop = pilhas_fileira_pop;
+    pilhas_fileira->move = pilhas_fileira_move;
+    pilhas_fileira->limpa = pilhas_fileira_limpa;
+    pilhas_fileira->isVazia = pilhas_fileira_isVazia;
 
     return pilhas_fileira;
 }
@@ -230,7 +234,7 @@ static int pilha_fileira_movimentacao_valida_valor(Carta* carta_topo, Carta* nov
     }
 }
 
-static void pilha_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_origem, int fileira_destino, int posicao_carta) {
+static void pilhas_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_origem, int fileira_destino, int posicao_carta) {
     if ( posicao_carta < pilhas_fileira->carta_virada[fileira_origem] ) {
         printf("Posicao invalida!\n");
         return;
@@ -270,18 +274,18 @@ static void pilha_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_orige
     free_pilha(pilha_auxiliar);
 }
 
-static void pilha_fileira_push(Pilhas_Fileira* pilhas_fileira, int fileira_id, Carta* carta) {
+static int pilhas_fileira_push(Pilhas_Fileira* pilhas_fileira, int fileira_id, Carta* carta) {
     Pilha* pilha_destino = pilhas_fileira->pilha[fileira_id];
 
     if ( !pilha_fileira_movimentacao_valida(pilha_destino, carta) ) {
-        printf("Movimentacao invalida!\n");
-        return;
+        printf("Movimento invalido!\n");
+        return 0;
     }
 
-    pilha_destino->push(pilha_destino, carta);
+    return pilha_destino->push(pilha_destino, carta);
 }
 
-static Carta* pilha_fileira_pop(Pilhas_Fileira* pilhas_fileira, int fileira_id) {
+static Carta* pilhas_fileira_pop(Pilhas_Fileira* pilhas_fileira, int fileira_id) {
     Pilha* pilha = pilhas_fileira->pilha[fileira_id];
     Carta* carta = pilha->pop(pilha);
 
@@ -290,7 +294,7 @@ static Carta* pilha_fileira_pop(Pilhas_Fileira* pilhas_fileira, int fileira_id) 
     return carta;
 }
 
-static void pilha_fileira_limpa(Pilhas_Fileira* pilhas_fileira, Pilha* pilha_estoque) {
+static void pilhas_fileira_limpa(Pilhas_Fileira* pilhas_fileira, Pilha* pilha_estoque) {
     int i;
     for (i = 0; i < 7; i++) {
         Pilha* pilha = pilhas_fileira->pilha[i];
@@ -321,6 +325,16 @@ void imprimePilhasFileira(Pilhas_Fileira* pilhas_fileira) {
         printf("Fileira %d!\n", i+1);
         pilhas_fileira_imprime_fileira(pilhas_fileira, i);
     }
+}
+
+static int pilhas_fileira_isVazia(Pilhas_Fileira* pilhas_fileira) {
+    int i;
+    for (i = 0; i < 7; i++) {
+        Pilha* pilha = pilhas_fileira->pilha[i];
+        if ( !isPilhaVazia(pilha) )
+            return 0;
+    }
+    return 1;
 }
 
 #endif // PILHA_FILEIRA_H_INCLUDED

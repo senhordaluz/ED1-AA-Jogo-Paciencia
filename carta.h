@@ -25,6 +25,7 @@ void free_carta(Carta* carta);
 static void carta_print(Carta* self);
 static void carta_troca(Carta* carta, char* valor);
 static int carta_isValorValido(char* valor);
+static int carta_getNaipe(Carta* carta);
 
 Carta* nova_carta(char* valor) {
     if ( carta_isValorValido(valor) ) {
