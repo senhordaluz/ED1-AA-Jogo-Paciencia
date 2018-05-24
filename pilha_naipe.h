@@ -102,15 +102,11 @@ static int pilhas_naipe_push(Pilhas_Naipe* pilhas_naipe, int pilha_id, Carta* ca
         return 0;
     }
 
-    printf("foi\n");
-
     // Caso a movimentacao seja valida e a pilha esteja vazia, salva qual naipe esta pilha pertencera
     if ( isPilhaVazia(pilha) ) {
         int naipe = carta->getNaipe(carta);
         pilhas_naipe->naipes[pilha_id] = naipe;
     }
-
-    printf("alovou\n");
 
     // Realiza o push
     return pilha->push(pilha, carta);

@@ -81,8 +81,7 @@ static Carta* pilha_pop(Pilha* pilha) {
 void pilha_limpa(Pilha* pilha) {
     if ( !isPilhaVazia(pilha) ) {
         int i;
-        int topo = pilha->topo;
-        for (i = 0; i < topo; i++) {
+        for (i = 0; i <= pilha->topo; i++) {
             Carta* carta = pilha->pop(pilha);
             free_carta(carta);
         }
@@ -93,7 +92,7 @@ void pilha_limpa(Pilha* pilha) {
 void imprimePilha(Pilha* pilha) {
     if ( !isPilhaVazia(pilha) ) {
         int i;
-        for (i = 0; i < pilha->topo; i++) {
+        for (i = 0; i <= pilha->topo; i++) {
             Carta* carta = pilha->cartas[i];
             carta->print(carta);
         }

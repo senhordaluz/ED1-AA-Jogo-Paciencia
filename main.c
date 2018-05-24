@@ -19,17 +19,26 @@ int main()
         printf("FOI: %d\n", count);
 
         // Testando movimento 1
+        printf("Testando movimento 1:\n");
         printf("Pilha Descarte:\n");
-        paciencia_movimento1(paciencia, PILHA_DESCARTE, 0);
+        printf("Sucesso - Movimento 1: %d\n", paciencia_movimento1(paciencia, PILHA_DESCARTE, 0));
         imprimePilha(paciencia->pilha_descarte);
 
         printf("Pilha Naipe:\n");
-        paciencia_movimento1(paciencia, PILHA_NAIPE, 1);
+        printf("Sucesso - Movimento 1: %d\n", paciencia_movimento1(paciencia, PILHA_NAIPE, 1));
         imprimePilha(paciencia->pilhas_naipe->pilha[1]);
 
         printf("Pilha Fileira:\n");
-        paciencia_movimento1(paciencia, PILHA_FILEIRA, 1);
+        printf("Sucesso - Movimento 1: %d\n", paciencia_movimento1(paciencia, PILHA_FILEIRA, 1));
         imprimePilha(paciencia->pilhas_fileira->pilha[1]);
+
+        // Testando movimento 2
+        printf("Testando movimento 2:\n");
+        printf("Sucesso Movimento 2: %d\n", paciencia_movimento2(paciencia, 3, 2));
+        printf("Pilha Naipe:\n");
+        imprimePilha(paciencia->pilhas_naipe->pilha[2]);
+        printf("Pilha Fileira:\n");
+        imprimePilha(paciencia->pilhas_fileira->pilha[3]);
 
         paciencia->finaliza(paciencia, &jogoRodando);
     }

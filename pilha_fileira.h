@@ -11,10 +11,12 @@ static struct pilhas_fileira {
 
     // Adiciona nova carta
     int (*push) (Pilhas_Fileira* self, int fileira_id, Carta* carta);
+    // Retorna carta para pilha apos movimentacao falha
+    int (*retorna) (Pilhas_Fileira* self, int fileira_id, Carta* carta);
     // Retira carta da pilha e retorna valor
     Carta* (*pop) (Pilhas_Fileira* self, int fileira_id);
     // Move cartas viradas de uma fileira para outra
-    void (*move) (Pilhas_Fileira* self, int fileira_origem, int fileira_destino, int posicao_carta);
+    int (*move) (Pilhas_Fileira* self, int fileira_origem, int fileira_destino, int posicao_carta);
     // Limpa pilha
     void (*limpa) (Pilhas_Fileira* self, Pilha* pilha_estoque);
     // Verifica se as pilhas estao vazias
@@ -27,8 +29,9 @@ static void reordena_topo(Pilhas_Fileira* pilhas_fileira, int fileira_id);
 static int pilha_fileira_movimentacao_valida(Pilha* pilha_destino, Carta* carta);
 static int pilha_fileira_movimentacao_valida_naipe(Carta* carta_topo, Carta* nova_carta);
 static int pilha_fileira_movimentacao_valida_valor(Carta* carta_topo, Carta* nova_carta);
-static void pilhas_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_origem, int fileira_destino, int posicao_carta);
+static int pilhas_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_origem, int fileira_destino, int posicao_carta);
 static int pilhas_fileira_push(Pilhas_Fileira* pilhas_fileira, int fileira_id, Carta* carta);
+static int pilhas_fileira_return(Pilhas_Fileira* pilhas_fileira, int fileira_id, Carta* carta);
 static Carta* pilhas_fileira_pop(Pilhas_Fileira* pilhas_fileira, int fileira_id);
 static void pilhas_fileira_limpa(Pilhas_Fileira* pilhas_fileira, Pilha* pilha_estoque);
 void pilhas_fileira_imprime_fileira(Pilhas_Fileira* pilhas_fileira, int fileira_id);
@@ -56,6 +59,7 @@ Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque) {
     preenche_pilhas_fileira(pilhas_fileira, pilha_estoque);
 
     pilhas_fileira->push = pilhas_fileira_push;
+    pilhas_fileira->retorna = pilhas_fileira_return;
     pilhas_fileira->pop = pilhas_fileira_pop;
     pilhas_fileira->move = pilhas_fileira_move;
     pilhas_fileira->limpa = pilhas_fileira_limpa;
@@ -234,10 +238,10 @@ static int pilha_fileira_movimentacao_valida_valor(Carta* carta_topo, Carta* nov
     }
 }
 
-static void pilhas_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_origem, int fileira_destino, int posicao_carta) {
+static int pilhas_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_origem, int fileira_destino, int posicao_carta) {
     if ( posicao_carta < pilhas_fileira->carta_virada[fileira_origem] ) {
         printf("Posicao invalida!\n");
-        return;
+        return 0;
     }
 
     Pilha* pilha_origem = pilhas_fileira->pilha[fileira_origem];
@@ -246,8 +250,8 @@ static void pilhas_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_orig
     {
         Carta* carta_topo = pilha_origem->cartas[posicao_carta];
         if ( !pilha_fileira_movimentacao_valida(pilha_destino, carta_topo) ) {
-            printf("Movimentacao invalida!\n");
-            return;
+            printf("Movimento invalido!\n");
+            return 0;
         }
     }
 
@@ -272,6 +276,8 @@ static void pilhas_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_orig
     }
 
     free_pilha(pilha_auxiliar);
+
+    return 1;
 }
 
 static int pilhas_fileira_push(Pilhas_Fileira* pilhas_fileira, int fileira_id, Carta* carta) {
@@ -281,6 +287,12 @@ static int pilhas_fileira_push(Pilhas_Fileira* pilhas_fileira, int fileira_id, C
         printf("Movimento invalido!\n");
         return 0;
     }
+
+    return pilha_destino->push(pilha_destino, carta);
+}
+
+static int pilhas_fileira_return(Pilhas_Fileira* pilhas_fileira, int fileira_id, Carta* carta) {
+    Pilha* pilha_destino = pilhas_fileira->pilha[fileira_id];
 
     return pilha_destino->push(pilha_destino, carta);
 }
