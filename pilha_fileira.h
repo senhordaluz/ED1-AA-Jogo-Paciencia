@@ -325,9 +325,13 @@ void pilhas_fileira_imprime_fileira(Pilhas_Fileira* pilhas_fileira, int fileira_
 
     int i;
     int carta_virada = pilhas_fileira->carta_virada[fileira_id];
-    for (i = carta_virada; i <= pilha->topo; i++) {
-        Carta* carta = pilha->cartas[i];
-        carta->print(carta);
+    for (i = 0; i <= pilha->topo; i++) {
+        if (i < carta_virada) {
+            printf("Carta Virada\n");
+        } else {
+            Carta* carta = pilha->cartas[i];
+            carta->print(carta);
+        }
     }
 }
 
