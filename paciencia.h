@@ -14,7 +14,7 @@
 #define PILHA_NAIPE     3
 
 typedef struct paciencia Paciencia;
-static struct paciencia {
+struct paciencia {
     Pilha* pilha_estoque;
     Pilhas_Fileira* pilhas_fileira;
     Pilhas_Naipe* pilhas_naipe;
@@ -138,7 +138,7 @@ static int paciencia_movimento1(Paciencia* paciencia, int tipo_pilha, int pilha_
     /**
      * Casos de Sucesso
      */
-    
+
     // Pilha de Descarte
     if ( tipo_pilha == PILHA_DESCARTE ) {
         Pilha* pilha_descarte = paciencia->pilha_descarte;
@@ -171,6 +171,8 @@ static int paciencia_movimento1(Paciencia* paciencia, int tipo_pilha, int pilha_
         }
         return 1;
     }
+
+    return 0;
 }
 
 /**

@@ -5,7 +5,7 @@
 #include "carta.h"
 
 typedef struct pilhas_naipe Pilhas_Naipe;
-static struct pilhas_naipe {
+struct pilhas_naipe {
     int naipes[4];
     PPilha pilha[4];
 
@@ -28,7 +28,7 @@ static Carta* pilhas_naipe_pop(Pilhas_Naipe* pilhas_naipe, int naipe);
 static int pilhas_naipe_movimentacao_valida(Pilha* pilha_destino, Carta* carta);
 static int pilhas_naipe_movimentacao_valida_naipe(Carta* carta_topo, Carta* nova_carta);
 static int pilhas_naipe_movimentacao_valida_valor(Carta* carta_topo, Carta* nova_carta);
-static int pilhas_naipe_limpa(Pilhas_Naipe* pilhas_naipe);
+static void pilhas_naipe_limpa(Pilhas_Naipe* pilhas_naipe);
 static int pilhas_naipe_cheias(Pilhas_Naipe* pilhas_naipe);
 
 Pilhas_Naipe* cria_pilhas_naipe(void) {
@@ -129,7 +129,7 @@ static int pilhas_naipe_movimentacao_valida(Pilha* pilha_destino, Carta* carta) 
         else
             return 0;
     }
-    
+
     // Caso contratio, verifica sequencia ascendente
     Carta* carta_topo = pilha_destino->cartas[pilha_destino->topo];
     if (pilhas_naipe_movimentacao_valida_naipe(carta_topo, carta))
@@ -156,77 +156,66 @@ static int pilhas_naipe_movimentacao_valida_naipe(Carta* carta_topo, Carta* nova
                 return 1;
             return 0;
     }
+    return 0;
 }
 
 static int pilhas_naipe_movimentacao_valida_valor(Carta* carta_topo, Carta* nova_carta) {
     switch (carta_topo->valor) {
         case 'K': case 'k':
             return 0;
-            break;
         case 'Q': case 'q':
             if (nova_carta->valor == 'K' || nova_carta->valor == 'k')
                 return 1;
             return 0;
-            break;
         case 'J': case 'j':
             if (nova_carta->valor == 'Q' || nova_carta->valor == 'q')
                 return 1;
             return 0;
-            break;
         case '9':
             if (nova_carta->valor == 'J' || nova_carta->valor == 'j')
                 return 1;
             return 0;
-            break;
         case '8':
             if (nova_carta->valor == '9')
                 return 1;
             return 0;
-            break;
         case '7':
             if (nova_carta->valor == '8')
                 return 1;
             return 0;
-            break;
         case '6':
             if (nova_carta->valor == '7')
                 return 1;
             return 0;
-            break;
         case '5':
             if (nova_carta->valor == '6')
                 return 1;
             return 0;
-            break;
         case '4':
             if (nova_carta->valor == '5')
                 return 1;
             return 0;
-            break;
         case '3':
             if (nova_carta->valor == '4')
                 return 1;
             return 0;
-            break;
         case '2':
             if (nova_carta->valor == '3')
                 return 1;
             return 0;
-            break;
         case '1':
             if (nova_carta->valor == '2')
                 return 1;
             return 0;
-            break;
         case 'A': case 'a':
             if (nova_carta->valor == '1')
                 return 1;
             return 0;
-            break;
     }
+    return 0;
 }
 
-static int pilhas_naipe_limpa(Pilhas_Naipe* pilhas_naipe) {
+static void pilhas_naipe_limpa(Pilhas_Naipe* pilhas_naipe) {
     int i;
     for (i = 0; i < 4; i++) {
         Pilha* pilha = pilhas_naipe->pilha[i];

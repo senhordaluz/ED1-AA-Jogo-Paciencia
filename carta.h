@@ -10,7 +10,7 @@
 
 typedef struct carta Carta;
 typedef struct carta* PCarta;
-static struct carta {
+struct carta {
     char valor;
     char naipe;
 
@@ -21,7 +21,7 @@ static struct carta {
     // Retorna enum com naipe
     int (*getNaipe) (Carta* self);
     // Retorna string
-    void (*toString) (Carta* self, char* string)
+    void (*toString) (Carta* self, char* string);
 };
 
 Carta* nova_carta(char* valor);
@@ -133,6 +133,7 @@ static int carta_getNaipe(Carta* carta) {
         case 'o':
             return OURO;
     }
+    return NULL;
 }
 
 static void carta_toString(Carta* carta, char* string) {

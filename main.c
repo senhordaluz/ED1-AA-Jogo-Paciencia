@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "interface.h"
 #include "paciencia.h"
 
 int main()
@@ -9,7 +10,9 @@ int main()
 
     Paciencia* paciencia = inicializa_jogo_paciencia();
 
-    int* jogoRodando = 1;
+    Interface_Mostra_Tela(paciencia, TELA_INICIO);
+
+    int jogoRodando = 1;
 
     int count = 0;
 
@@ -21,6 +24,8 @@ int main()
         char string[5000];
         paciencia->pilhas_fileira->toString(paciencia->pilhas_fileira, string);
         printf("%s", string);
+
+        Interface_Mostra_Tela(paciencia, TELA_INICIO);
 
         // printf("Too String das Pilhas Fileiras De Novo: \n");
         // paciencia->pilhas_fileira->toString(paciencia->pilhas_fileira, string);
@@ -59,17 +64,6 @@ int main()
         printf("FIM de LOOP: %d\n", count);
         printf("Jogo Rodando: %d\n", jogoRodando);
     }
-
-    // char string[20];
-    // Carta* carta = nova_carta("AP");
-    // carta->toString(carta, string);
-    // printf("Carta to string: %s\n", string);
-    // free_carta(carta);
-
-    // carta = nova_carta("1C");
-    // carta->toString(carta, string);
-    // printf("Carta to string: %s\n", string);
-    // free_carta(carta);
 
     printf("Hello world!\n");
     return 0;

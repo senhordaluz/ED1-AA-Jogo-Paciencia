@@ -5,7 +5,7 @@
 
 typedef struct pilha Pilha;
 typedef struct pilha* PPilha;
-static struct pilha {
+struct pilha {
     // Topo de pilha
     int topo;
     // Vetor de cartas
@@ -43,7 +43,7 @@ Pilha* cria_pilha_generica(int tamanho) {
 
     pilha->topo = tamanho;
     pilha->tamanho = tamanho;
-    pilha->cartas = (Pilha*)malloc(tamanho * sizeof(Pilha));
+    pilha->cartas = malloc(tamanho * sizeof(Carta));
 
     pilha->push = pilha_push;
     pilha->pop = pilha_pop;
@@ -124,7 +124,6 @@ static void pilha_toString(Pilha* pilha, char* string) {
             strcat(string, cartaString);
         }
     }
-    return string;
 }
 
 #endif // PILHA_H_INCLUDED

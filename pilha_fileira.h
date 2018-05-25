@@ -7,7 +7,7 @@
 #include "carta.h"
 
 typedef struct pilhas_fileira Pilhas_Fileira;
-static struct pilhas_fileira {
+struct pilhas_fileira {
     int carta_virada[7];
     PPilha pilha[7];
 
@@ -156,25 +156,20 @@ static int pilha_fileira_movimentacao_valida_naipe(Carta* carta_topo, Carta* nov
                 case 'C': case 'c':
                 case 'O': case 'o':
                     return 1;
-                    break;
                 default:
                     return 0;
-                    break;
             }
-            break;
         case 'C': case 'c':
         case 'O': case 'o':
             switch (nova_carta->naipe) {
                 case 'E': case 'e':
                 case 'P': case 'p':
                     return 1;
-                    break;
                 default:
                     return 0;
-                    break;
             }
-            break;
     }
+    return 0;
 }
 
 static int pilha_fileira_movimentacao_valida_valor(Carta* carta_topo, Carta* nova_carta) {
@@ -183,66 +178,55 @@ static int pilha_fileira_movimentacao_valida_valor(Carta* carta_topo, Carta* nov
             if (nova_carta->valor == 'Q' || nova_carta->valor == 'q')
                 return 1;
             return 0;
-            break;
         case 'Q': case 'q':
             if (nova_carta->valor == 'J' || nova_carta->valor == 'j')
                 return 1;
             return 0;
-            break;
         case 'J': case 'j':
             if (nova_carta->valor == '9')
                 return 1;
             return 0;
-            break;
         case '9':
             if (nova_carta->valor == '9')
                 return 1;
             return 0;
-            break;
         case '8':
             if (nova_carta->valor == '7')
                 return 1;
             return 0;
-            break;
         case '7':
             if (nova_carta->valor == '6')
                 return 1;
             return 0;
-            break;
         case '6':
             if (nova_carta->valor == '5')
                 return 1;
             return 0;
-            break;
         case '5':
             if (nova_carta->valor == '4')
                 return 1;
             return 0;
-            break;
         case '4':
             if (nova_carta->valor == '3')
                 return 1;
             return 0;
-            break;
         case '3':
             if (nova_carta->valor == '2')
                 return 1;
             return 0;
-            break;
         case '2':
             if (nova_carta->valor == '1')
                 return 1;
             return 0;
-            break;
         case '1':
             if (nova_carta->valor == 'A' || nova_carta->valor == 'a')
                 return 1;
             return 0;
-            break;
         case 'A': case 'a':
             return 0;
-            break;
     }
+
+    return 0;
 }
 
 static int pilhas_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_origem, int fileira_destino, int posicao_carta) {
@@ -373,7 +357,7 @@ static void pilhas_fileira_toString(Pilhas_Fileira* pilhas_fileira, char* string
     strcpy(string, "");
 
     // Por algum motivo bizarro esse cara ta perdendo o ponteiro
-    Carta* corecao_de_ponteiro = pilhas_fileira->pilha[1]->cartas[1];
+    Carta* corecao_de_ponteiro = pilhas_fileira->pilha[3]->cartas[3];
 
     // Monta Cabecalho
     int i;
@@ -395,9 +379,9 @@ static void pilhas_fileira_toString(Pilhas_Fileira* pilhas_fileira, char* string
         for (j = 0; j < 7; j++) {
             Pilha* pilha = pilhas_fileira->pilha[j];
             // Por algum motivo bizarro esse cara ta perdendo o ponteiro
-            if ( i == 1 && j == 1 )
+            if ( i == 3 && j == 3 )
                 pilha->cartas[i] = corecao_de_ponteiro;
-            
+
             Carta* carta = pilha->cartas[i];
             int topo_de_pilha = pilha->topo;
             if ( !carta && topo_de_pilha < maior_topo_de_pilha ) {
