@@ -115,14 +115,17 @@ int isPilhaCheia(Pilha* pilha) {
 static void pilha_toString(Pilha* pilha, char* string) {
     strcpy(string, "");
     if ( !isPilhaVazia(pilha) ) {
-        int i;
-        char cartaString[20];
-        for (i = 0; i <= pilha->topo; i++) {
-            Carta* carta = pilha->cartas[i];
-            carta->toString(carta, cartaString);
-            strcat(cartaString, "\n");
-            strcat(string, cartaString);
-        }
+        Carta* carta = pilha->cartas[pilha->topo];
+        carta->toString(carta, string);
+        // int i;
+        // char cartaString[20];
+        // for (i = 0; i <= pilha->topo; i++) {
+        //     Carta* carta = pilha->cartas[i];
+        //     carta->toString(carta, cartaString);
+        //     strcat(cartaString, "\n");
+        //     strcat(string, cartaString);
+    } else {
+        strcpy(string, "Pilha Vazia");
     }
 }
 

@@ -23,8 +23,10 @@ struct pilhas_fileira {
     void (*limpa) (Pilhas_Fileira* self, Pilha* pilha_estoque);
     // Verifica se as pilhas estao vazias
     int (*isVazia) (Pilhas_Fileira* self);
+    // Retorna id da maior pilha
+    int (*maiorPilhaID) (Pilhas_Fileira* self);
     // Monta string
-    void (*toString) (Pilhas_Fileira* self, char* string);
+    void (*toString) (Pilhas_Fileira* self, char* string, int fileira_id, int carta_id);
 };
 
 Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque);
@@ -42,6 +44,7 @@ void pilhas_fileira_imprime_fileira(Pilhas_Fileira* pilhas_fileira, int fileira_
 void imprimePilhasFileira(Pilhas_Fileira* pilhas_fileira);
 static int pilhas_fileira_isVazia(Pilhas_Fileira* pilhas_fileira);
 static int pilhas_fileira_maior_pilha_id(Pilhas_Fileira* pilhas_fileira);
+static void pilhas_fileira_toStringCarta(Pilhas_Fileira* pilhas_fileira, char* string, int fileira_id, int carta_id);
 static void pilhas_fileira_toString(Pilhas_Fileira* pilhas_fileira, char* string);
 
 Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque) {
@@ -70,7 +73,9 @@ Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque) {
     pilhas_fileira->move = pilhas_fileira_move;
     pilhas_fileira->limpa = pilhas_fileira_limpa;
     pilhas_fileira->isVazia = pilhas_fileira_isVazia;
-    pilhas_fileira->toString = pilhas_fileira_toString;
+    pilhas_fileira->maiorPilhaID = pilhas_fileira_maior_pilha_id;
+    pilhas_fileira->toString = pilhas_fileira_toStringCarta;
+    // pilhas_fileira->toString = pilhas_fileira_toString;
 
     return pilhas_fileira;
 }
@@ -351,6 +356,32 @@ static int pilhas_fileira_maior_pilha_id(Pilhas_Fileira* pilhas_fileira) {
         if (pilhas_fileira->pilha[i]->topo > pilhas_fileira->pilha[maior_pilha_id]->topo)
             maior_pilha_id = i;
     return maior_pilha_id;
+}
+
+static void pilhas_fileira_toStringCarta(Pilhas_Fileira* pilhas_fileira, char* string, int fileira_id, int carta_id) {
+    strcpy(string, "");
+
+    if (fileira_id >= 7) {
+        printf("id de fileira invalido!\n");
+        return;
+    }
+
+    int maior_pilha_id = pilhas_fileira_maior_pilha_id(pilhas_fileira);
+    int maior_topo_de_pilha = pilhas_fileira->pilha[maior_pilha_id]->topo;
+
+    if ( carta_id < pilhas_fileira->carta_virada[fileira_id] )
+        strcat(string, "Carta Virada");
+    else if (pilhas_fileira->pilha[fileira_id]->topo >= carta_id ) {
+        Pilha* pilha = pilhas_fileira->pilha[fileira_id];
+        Carta* carta = pilha->cartas[carta_id];
+        if (carta) {
+            char buffer[30] = "";
+            snprintf(buffer, 30, "[%d]: ", carta_id);
+            carta->toString(carta, string);
+            strcat(buffer, string);
+            strcpy(string, buffer);
+        }
+    }
 }
 
 static void pilhas_fileira_toString(Pilhas_Fileira* pilhas_fileira, char* string) {

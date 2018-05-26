@@ -35,13 +35,15 @@ struct paciencia {
     // Funcoes
     void (*reiniciar) (Paciencia* self);
     void (*finaliza) (Paciencia* self);
+    int (*isFimDeJogo) (Paciencia* self);
 };
 
 Paciencia* inicializa_paciencia(int* estado_de_jogo);
 void free_paciencia(Paciencia* paciencia);
 static void paciencia_finaliza(Paciencia* paciencia);
 static void paciencia_reiniciar(Paciencia* paciencia);
-static int isFimDeJogo(Paciencia* paciencia);
+static int paciencia_isFimDeJogo(Paciencia* paciencia);
+static void paciencia_reordena_pilha_estoque(Paciencia* paciencia);
 
 static int paciencia_movimento1(Paciencia* paciencia, int tipo_pilha, int pilha_id);
 static int paciencia_movimento2(Paciencia* paciencia, int fileira_id, int pilha_naipe_id);
@@ -72,11 +74,15 @@ Paciencia* inicializa_paciencia(int* estado_de_jogo) {
 
     paciencia->estado_de_jogo = estado_de_jogo;
 
-    // Funcoes
-    paciencia->finaliza = paciencia_finaliza;
+    // Movimentos
     paciencia->movimento1 = paciencia_movimento1;
     paciencia->movimento2 = paciencia_movimento2;
     paciencia->movimento3 = paciencia_movimento3;
+
+    // Funcoes
+    paciencia->reiniciar = paciencia_reiniciar;
+    paciencia->finaliza = paciencia_finaliza;
+    paciencia->isFimDeJogo = paciencia_isFimDeJogo;
 
     return paciencia;
 }
@@ -108,7 +114,7 @@ static void paciencia_reiniciar(Paciencia* paciencia) {
     pilha_descarte->limpa(pilha_descarte);
 }
 
-static int isFimDeJogo(Paciencia* paciencia) {
+static int paciencia_isFimDeJogo(Paciencia* paciencia) {
     Pilha* pilha_estoque = paciencia->pilha_estoque;
     Pilhas_Fileira* pilhas_fileira = paciencia->pilhas_fileira;
     Pilhas_Naipe* pilhas_naipe = paciencia->pilhas_naipe;
@@ -123,6 +129,18 @@ static int isFimDeJogo(Paciencia* paciencia) {
         return 1;
     }
     return 0;
+}
+
+static void paciencia_reordena_pilha_estoque(Paciencia* paciencia) {
+    Pilha* pilha_estoque = paciencia->pilha_estoque;
+    Pilha* pilha_descarte = paciencia->pilha_descarte;
+
+    if ( isPilhaVazia(pilha_estoque) ) {
+        while( !isPilhaVazia(pilha_descarte) ) {
+            Carta* carta = pilha_descarte->pop(pilha_descarte);
+            pilha_estoque->push(pilha_estoque, carta);
+        }
+    }
 }
 
 /**
@@ -167,6 +185,8 @@ static int paciencia_movimento1(Paciencia* paciencia, int tipo_pilha, int pilha_
         if (!sucesso) {
             pilha_estoque->push(pilha_estoque, carta);
             return 0;
+        } else {
+            paciencia_reordena_pilha_estoque(paciencia);
         }
         return 1;
     }
@@ -178,6 +198,8 @@ static int paciencia_movimento1(Paciencia* paciencia, int tipo_pilha, int pilha_
         if (!sucesso) {
             pilha_estoque->push(pilha_estoque, carta);
             return 0;
+        } else {
+            paciencia_reordena_pilha_estoque(paciencia);
         }
         return 1;
     }
@@ -189,6 +211,8 @@ static int paciencia_movimento1(Paciencia* paciencia, int tipo_pilha, int pilha_
         if (!sucesso) {
             pilha_estoque->push(pilha_estoque, carta);
             return 0;
+        } else {
+            paciencia_reordena_pilha_estoque(paciencia);
         }
         return 1;
     }

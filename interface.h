@@ -2,7 +2,7 @@
 #define INTERFACE_H_INCLUDED
 
 #ifdef __unix__
-#elif defined(_WIN32) || defined(WIN32) 
+#elif defined(_WIN32) || defined(WIN32)
 #define OS_Windows
 #endif
 
@@ -12,6 +12,8 @@
 
 #include "paciencia.h"
 #include "carta.h"
+
+#define VERSAO  "VERSAO - 1.0.0"
 
 // Telas
 #define TELA_INICIO     0
@@ -28,9 +30,11 @@
 #define MOVIMENTO_1_FILEIRA     5
 #define MOVIMENTO_1_DESCARTE    6
 #define PROXIMA_ESCOLHA         99
+#define MOVIMENTO_SUCESSO       100
+#define MOVIMENTO_FALHA         101
 
 // Constantes internas
-#define LARGURA             150
+#define LARGURA             200
 #define BUFFER_SIZE         5000
 #define SCREEN_BUFFER_SIZE  400000
 
@@ -40,7 +44,10 @@ void Interface_Mostra_Tela(Paciencia* paciencia);
 
 static void _interface_mostra_tela_principal(Paciencia* paciencia);
 static void _interface_mostra_tela_jogo(Paciencia* paciencia);
-static int _interface_monta_baralho_em_tela(Paciencia* paciencia, char* tela);
+
+static void _interface_monta_cabecalho(void);
+static int _interface_monta_baralho_em_tela(Paciencia* paciencia);
+static void _interface_monta_baralho_preenche_vazios(char* string, int tamanho);
 
 static void _interface_limpa_tela(void);
 static void _interface_adiciona_linha_vazia(char* tela);
@@ -60,7 +67,7 @@ static void _interface_tela_jogo_opcoes_movimento2(Paciencia* paciencia, int* es
 static void _interface_tela_jogo_opcoes_movimento3(Paciencia* paciencia, int* escolha_movimento);
 
 static int _interface_controle_entrada_opcoes(int opcoes_validas);
-static void _interface_controle_pressione_enter_para_continuar(int sucesso);
+static int _interface_controle_pressione_enter_para_continuar(int sucesso);
 
 // ***********************************************************************************************************
 
@@ -87,26 +94,7 @@ void Interface_Mostra_Tela(Paciencia* paciencia) {
 static void _interface_mostra_tela_principal(Paciencia* paciencia) {
     _interface_limpa_tela();
 
-    char tela[SCREEN_BUFFER_SIZE] = "";
-    char linha[BUFFER_SIZE] = "";
-
-    // Prepara cabecalho
-    _interface_monta_linha_separacao(tela);
-    
-    _interface_adiciona_linha_vazia(tela);
-    _interface_adiciona_linha_vazia(tela);
-
-    _interface_preenche_lados(linha, "PACIENCIA");
-    _interface_adiciona_linha(tela, linha);
-
-    _interface_adiciona_linha_vazia(tela);
-    _interface_adiciona_linha_vazia(tela);
-
-    // Footer
-    _interface_monta_linha_separacao(tela);
-
-    // Preenche tela
-    puts(tela);
+    _interface_monta_cabecalho();
 
     // Exibe opcoes
     _interface_tela_principal_opcoes(paciencia);
@@ -114,45 +102,172 @@ static void _interface_mostra_tela_principal(Paciencia* paciencia) {
 
 // Tela de jogo
 static void _interface_mostra_tela_jogo(Paciencia* paciencia) {
-    
+
     int escolha_movimento = ESCOLHA_MOVIMENTO;
     do {
         _interface_limpa_tela();
 
-        char tela[SCREEN_BUFFER_SIZE] = "";
-        char linha[BUFFER_SIZE] = "";
-        char buffer[BUFFER_SIZE] = "";
-
-        // Prepara cabecalho
-        _interface_monta_linha_separacao(tela);
-        
-        _interface_adiciona_linha_vazia(tela);
-        _interface_adiciona_linha_vazia(tela);
-
-        _interface_preenche_lados(linha, "PACIENCIA");
-        _interface_adiciona_linha(tela, linha);
-
-        _interface_adiciona_linha_vazia(tela);
-        _interface_adiciona_linha_vazia(tela);
-
-        // Footer
-        _interface_monta_linha_separacao(tela);
+        _interface_monta_cabecalho();
 
         // Mostra cartas
-        _interface_monta_baralho_em_tela(paciencia, tela);
-
-        // Preenche tela
-        puts(tela);
+        _interface_monta_baralho_em_tela(paciencia);
 
         // Exibe opcoes
         _interface_tela_jogo_opcoes(paciencia, &escolha_movimento);
     } while (escolha_movimento != PROXIMA_ESCOLHA);
 }
 
-// Monta baralho com todas a pilhas em tela
-static int _interface_monta_baralho_em_tela(Paciencia* paciencia, char* tela) {
+// ***********************************************************************************************************
 
+/**
+ * Modulos de tela
+ */
+
+// Cabecalho
+static void _interface_monta_cabecalho(void) {
+    char tela[SCREEN_BUFFER_SIZE] = "";
+    char linha[BUFFER_SIZE] = "";
+
+    // Prepara cabecalho
+    _interface_monta_linha_separacao(tela);
+
+    _interface_adiciona_linha_vazia(tela);
+    _interface_adiciona_linha_vazia(tela);
+
+    _interface_preenche_lados(linha, "PACIENCIA");
+    _interface_adiciona_linha(tela, linha);
+
+    _interface_adiciona_linha_vazia(tela);
+    _interface_preenche_lados(linha, VERSAO);
+    _interface_adiciona_linha(tela, linha);
+
+    _interface_adiciona_linha_vazia(tela);
+    _interface_adiciona_linha_vazia(tela);
+
+    _interface_monta_linha_separacao(tela);
+
+    // Preenche tela
+    puts(tela);
 }
+
+// Monta baralho com todas a pilhas em tela
+static int _interface_monta_baralho_em_tela(Paciencia* paciencia) {
+    char tela[SCREEN_BUFFER_SIZE] = "";
+    char linha[BUFFER_SIZE] = "";
+    char buffer[BUFFER_SIZE] = "";
+
+    // Pilhas
+    Pilha* pilha_estoque = paciencia->pilha_estoque;
+    Pilhas_Fileira* pilhas_fileira = paciencia->pilhas_fileira;
+    Pilhas_Naipe* pilhas_naipe = paciencia->pilhas_naipe;
+    Pilha* pilha_descarte = paciencia->pilha_descarte;
+
+    // Cabecalho
+    _interface_adiciona_linha_vazia(tela);
+
+    _interface_preenche_lados(linha, "|                        |                        |                        |                        |                        |                        |");
+    _interface_adiciona_linha(tela, linha);
+
+    _interface_preenche_lados(linha, "|        Estoque         |        Descarte        |    Pilha de Naipe 1    |    Pilha de Naipe 2    |    Pilha de Naipe 3    |    Pilha de Naipe 4    |");
+    _interface_adiciona_linha(tela, linha);
+
+    _interface_preenche_lados(linha, "|                        |                        |                        |                        |                        |                        |");
+    _interface_adiciona_linha(tela, linha);
+
+    // Pilha Estoque
+    pilha_estoque->toString(pilha_estoque, buffer);
+    strcpy(linha, "|");
+    _interface_monta_baralho_preenche_vazios(buffer, 24);
+    strcat(linha, buffer);
+    strcat(linha, "|");
+
+    // Pilha Descarte
+    pilha_descarte->toString(pilha_descarte, buffer);
+    _interface_monta_baralho_preenche_vazios(buffer, 24);
+    strcat(linha, buffer);
+    strcat(linha, "|");
+
+    // Pilhas de Naipe
+    int i;
+    for (i = 0; i < 4; i++) {
+        Pilha* pilha_naipe = pilhas_naipe->pilha[i];
+        pilha_naipe->toString(pilha_naipe, buffer);
+        _interface_monta_baralho_preenche_vazios(buffer, 24);
+        strcat(linha, buffer);
+        strcat(linha, "|");
+    }
+
+    strcpy(buffer, linha);
+    _interface_preenche_lados(linha, buffer);
+    _interface_adiciona_linha(tela, linha);
+
+    _interface_preenche_lados(linha, "|                        |                        |                        |                        |                        |                        |");
+    _interface_adiciona_linha(tela, linha);
+
+    // Pilhas de Fileira
+    _interface_adiciona_linha_vazia(tela);
+    _interface_preenche_lados(linha, "PILHAS FILEIRA");
+    _interface_adiciona_linha(tela, linha);
+
+    _interface_preenche_lados(linha, "|                          |                          |                          |                          |                          |                          |                          |");
+    _interface_adiciona_linha(tela, linha);
+
+    _interface_preenche_lados(linha, "|        FILEIRA 1         |        FILEIRA 2         |        FILEIRA 3         |        FILEIRA 4         |        FILEIRA 5         |        FILEIRA 6         |        FILEIRA 7         |");
+    _interface_adiciona_linha(tela, linha);
+
+    _interface_preenche_lados(linha, "|                          |                          |                          |                          |                          |                          |                          |");
+    _interface_adiciona_linha(tela, linha);
+
+    // "|     [0]: Rei de ouro     |"
+    // "|   [1]: Valete de ouro  |"
+
+    // Monta fileiras
+    int maior_pilha_id = pilhas_fileira->maiorPilhaID(pilhas_fileira);
+    int maior_topo_de_pilha = pilhas_fileira->pilha[maior_pilha_id]->topo;
+    for (i = 0; i <= maior_topo_de_pilha; i++) {
+        int j;
+        for ( j = 0; j < 7; j++) {
+            if ( j == 0 )
+                strcpy(linha, "|");
+
+            pilhas_fileira->toString(pilhas_fileira, buffer, j, i);
+            _interface_monta_baralho_preenche_vazios(buffer, 24);
+            strcat(linha, buffer);
+            strcat(linha, "|");
+        }
+        strcpy(buffer, linha);
+        _interface_preenche_lados(linha, buffer);
+        _interface_adiciona_linha(tela, linha);
+    }
+
+    _interface_preenche_lados(linha, "|                          |                          |                          |                          |                          |                          |                          |");
+    _interface_adiciona_linha(tela, linha);
+
+    // Preenche tela
+    puts(tela);
+}
+
+static void _interface_monta_baralho_preenche_vazios(char* string, int tamanho) {
+    char buffer[BUFFER_SIZE] = "";
+    int sobra = tamanho - strlen(string);
+
+    int i;
+    if (sobra % 2) {
+        for (i = 0; i <= sobra/2; i++)
+            strcat(buffer, " ");
+        strcat(buffer, string);
+        for (i = 0; i < sobra/2; i++)
+            strcat(buffer, " ");
+    } else {
+        for (i = 0; i <= sobra/2; i++)
+            strcat(buffer, " ");
+        strcat(buffer, string);
+        for (i = 0; i <= sobra/2; i++)
+            strcat(buffer, " ");
+    }
+    strcpy(string, buffer);
+}
+
 
 // ***********************************************************************************************************
 
@@ -194,7 +309,7 @@ static void _interface_adiciona_linha(char* tela, char* linha) {
 
 static void _interface_preenche_lados(char* linha, char* texto) {
     strcpy(linha, "");
-    
+
     char buffer[BUFFER_SIZE] = "";
     int tamanho_texto = strlen(texto);
     int espaco_sobrando = LARGURA/2 - tamanho_texto/2;
@@ -207,7 +322,7 @@ static void _interface_preenche_lados(char* linha, char* texto) {
     }
 
     strcat(buffer, texto);
-    
+
     strcpy(linha, buffer);
 }
 
@@ -265,6 +380,15 @@ static void _interface_tela_jogo_opcoes(Paciencia* paciencia, int* escolha_movim
             return _interface_tela_jogo_opcoes_movimento2(paciencia, escolha_movimento);
         case MOVIMENTO_3:
             return _interface_tela_jogo_opcoes_movimento3(paciencia, escolha_movimento);
+
+        case MOVIMENTO_SUCESSO:
+            if ( _interface_controle_pressione_enter_para_continuar(1) )
+                *escolha_movimento = ESCOLHA_MOVIMENTO;
+            return;
+        case MOVIMENTO_FALHA:
+            if ( _interface_controle_pressione_enter_para_continuar(0) )
+                *escolha_movimento = ESCOLHA_MOVIMENTO;
+            return;
     }
 }
 
@@ -366,27 +490,32 @@ static void _interface_tela_jogo_opcoes_movimento1_naipe(Paciencia* paciencia, i
 
     int opcao_escolhida = _interface_controle_entrada_opcoes(5);
 
+    int sucesso;
     switch (opcao_escolhida) {
         case 1: // Colocar carta na pilha de naipe
             *escolha_movimento = PROXIMA_ESCOLHA;
-            _interface_controle_pressione_enter_para_continuar(paciencia->movimento1(paciencia, PILHA_NAIPE, 0));
+            sucesso = paciencia->movimento1(paciencia, PILHA_NAIPE, 0);
             break;
         case 2: // Colocar carta numa pilha fileira
             *escolha_movimento = PROXIMA_ESCOLHA;
-            _interface_controle_pressione_enter_para_continuar(paciencia->movimento1(paciencia, PILHA_NAIPE, 1));
+            sucesso = paciencia->movimento1(paciencia, PILHA_NAIPE, 1);
             break;
         case 3: // Colocar carta na pilha de descarte
             *escolha_movimento = PROXIMA_ESCOLHA;
-            _interface_controle_pressione_enter_para_continuar(paciencia->movimento1(paciencia, PILHA_NAIPE, 2));
+            sucesso = paciencia->movimento1(paciencia, PILHA_NAIPE, 2);
             break;
         case 4: // Volta para opcoes da pilha de estoque
             *escolha_movimento = PROXIMA_ESCOLHA;
-            _interface_controle_pressione_enter_para_continuar(paciencia->movimento1(paciencia, PILHA_NAIPE, 3));
+            sucesso = paciencia->movimento1(paciencia, PILHA_NAIPE, 3);
             break;
         case 5: // Volta para opcoes da pilha de estoque
             *escolha_movimento = MOVIMENTO_1;
-            break;
+            return;
     }
+    if (sucesso)
+        *escolha_movimento = MOVIMENTO_SUCESSO;
+    else
+        *escolha_movimento = MOVIMENTO_FALHA;
 }
 
 // Controle de opcoes do movimento 1 para pilhas de naipe:
@@ -433,13 +562,23 @@ static int _interface_controle_entrada_opcoes(int opcoes_validas) {
     return opcao_escolhida;
 }
 
-static void _interface_controle_pressione_enter_para_continuar(int sucesso) {
+static int _interface_controle_pressione_enter_para_continuar(int sucesso) {
     if (sucesso)
         puts(" Movimento bem sucedido ");
     else
         puts(" Nao foi possivel executar o movimento ");
-    puts("Pressione enter para continuar");
-    while( getchar() != '\n' );
+    printf(" Pressione enter para continuar...");
+    char enter;
+    int result = 0;
+    while( enter != '\n' ) {
+        enter = getchar();
+    }
+    // while( getchar() != '\n' );
+    // char enter = getchar();
+    if ( enter == '\n' )
+        return 1;
+    else
+        return 0;
 }
 
 // ***********************************************************************************************************

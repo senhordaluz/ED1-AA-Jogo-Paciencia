@@ -16,7 +16,7 @@
 	"pilha.h"
 	"carta.h"
 
-1527275919 w:\c\ed1\aa\pilha.h
+1527358531 w:\c\ed1\aa\pilha.h
 	"carta.h"
 
 1527276147 w:\c\ed1\aa\pilha_naipe.h
@@ -27,12 +27,12 @@
 	"pilha.h"
 	"carta.h"
 
-1527276243 w:\c\ed1\aa\pilha_fileira.h
+1527362764 w:\c\ed1\aa\pilha_fileira.h
 	<string.h>
 	"pilha.h"
 	"carta.h"
 
-1527297957 w:\c\ed1\aa\paciencia.h
+1527358066 w:\c\ed1\aa\paciencia.h
 	"carta.h"
 	"pilha.h"
 	"pilha_estoque.h"
@@ -40,7 +40,7 @@
 	"pilha_descarte.h"
 	"pilha_fileira.h"
 
-1527298699 w:\c\ed1\aa\interface.h
+1527364245 w:\c\ed1\aa\interface.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
