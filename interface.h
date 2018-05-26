@@ -67,6 +67,8 @@ static void _interface_tela_jogo_opcoes_movimento2(Paciencia* paciencia, int* es
 static void _interface_tela_jogo_opcoes_movimento3(Paciencia* paciencia, int* escolha_movimento);
 
 static int _interface_controle_entrada_opcoes(int opcoes_validas);
+static void myflush(FILE *in);
+static void mypause(void);
 static int _interface_controle_pressione_enter_para_continuar(int sucesso);
 
 // ***********************************************************************************************************
@@ -562,23 +564,31 @@ static int _interface_controle_entrada_opcoes(int opcoes_validas) {
     return opcao_escolhida;
 }
 
+static void myflush(FILE *in) {
+  int ch;
+
+  do
+    ch = fgetc ( in ); 
+  while ( ch != EOF && ch != '\n' ); 
+
+  clearerr ( in );
+}
+
+static void mypause(void) {
+  fflush ( stdout );
+  getchar();
+} 
+
 static int _interface_controle_pressione_enter_para_continuar(int sucesso) {
     if (sucesso)
         puts(" Movimento bem sucedido ");
     else
         puts(" Nao foi possivel executar o movimento ");
     printf(" Pressione enter para continuar...");
-    char enter;
-    int result = 0;
-    while( enter != '\n' ) {
-        enter = getchar();
-    }
-    // while( getchar() != '\n' );
-    // char enter = getchar();
-    if ( enter == '\n' )
-        return 1;
-    else
-        return 0;
+
+    myflush ( stdin );
+    mypause();
+    return 1;
 }
 
 // ***********************************************************************************************************

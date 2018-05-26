@@ -90,7 +90,7 @@ static int pilhas_naipe_push(Pilhas_Naipe* pilhas_naipe, int pilha_id, Carta* ca
 
     // Verifica se o naipe ja foi alocado em outra pilha
     if ( isNaipeAlocado_outraPilha(pilhas_naipe, pilha_id) ) {
-        printf("Movimento invalido!\n");
+        printf("Movimento invalido - Naipe Alocado!\n");
         return 0;
     }
 
@@ -98,7 +98,7 @@ static int pilhas_naipe_push(Pilhas_Naipe* pilhas_naipe, int pilha_id, Carta* ca
 
     // Verifica se a movimentacao e valida
     if ( !pilhas_naipe_movimentacao_valida(pilha, carta) ) {
-        printf("Movimento invalido!\n");
+        printf("Movimento invalido - Valor Carta!\n");
         return 0;
     }
 
