@@ -15,26 +15,33 @@
 
 typedef struct paciencia Paciencia;
 struct paciencia {
+    // Pilhas
     Pilha* pilha_estoque;
     Pilhas_Fileira* pilhas_fileira;
     Pilhas_Naipe* pilhas_naipe;
     Pilha* pilha_descarte;
 
+    // Tela de jogo
+    int tela_atual;
+
+    // Ponteiro para controle do loop
+    int* estado_de_jogo;
+
     // Funcoes
     void (*reiniciar) (Paciencia* self);
-    void (*finaliza) (Paciencia* self, int* estado_de_jogo);
+    void (*finaliza) (Paciencia* self);
 };
 
-Paciencia* inicializa_jogo_paciencia(void);
+Paciencia* inicializa_paciencia(int* estado_de_jogo);
 void free_paciencia(Paciencia* paciencia);
-static void paciencia_finaliza(Paciencia* paciencia, int* estado_de_jogo);
+static void paciencia_finaliza(Paciencia* paciencia);
 static void paciencia_reiniciar(Paciencia* paciencia);
 static int isFimDeJogo(Paciencia* paciencia);
 
 static int paciencia_movimento1(Paciencia* paciencia, int tipo_pilha, int pilha_id);
 static int paciencia_movimento2(Paciencia* paciencia, int fileira_id, int pilha_naipe_id);
 
-Paciencia* inicializa_jogo_paciencia(void) {
+Paciencia* inicializa_paciencia(int* estado_de_jogo) {
     Paciencia* paciencia = (Paciencia*)malloc(sizeof(Paciencia));
 
     if (!paciencia) {
@@ -54,6 +61,11 @@ Paciencia* inicializa_jogo_paciencia(void) {
     paciencia->pilhas_naipe = pilhas_naipe;
     paciencia->pilha_descarte = pilha_descarte;
 
+    // Inicializa jogo na tela inicial
+    paciencia->tela_atual = 0;
+
+    paciencia->estado_de_jogo = estado_de_jogo;
+
     // Funcoes
     paciencia->finaliza = paciencia_finaliza;
 
@@ -69,8 +81,8 @@ void free_paciencia(Paciencia* paciencia) {
     free(paciencia);
 }
 
-static void paciencia_finaliza(Paciencia* paciencia, int* estado_de_jogo) {
-    *estado_de_jogo = 0;
+static void paciencia_finaliza(Paciencia* paciencia) {
+    *(paciencia->estado_de_jogo) = 0;
     free_paciencia(paciencia);
 }
 
