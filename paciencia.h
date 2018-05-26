@@ -27,6 +27,11 @@ struct paciencia {
     // Ponteiro para controle do loop
     int* estado_de_jogo;
 
+    // Momvimentos de jogo
+    int (*movimento1) (Paciencia* self, int tipo_pilha, int pilha_id);
+    int (*movimento2) (Paciencia* self, int tipo_pilha, int pilha_id);
+    int (*movimento3) (Paciencia* self, int tipo_pilha, int pilha_id);
+
     // Funcoes
     void (*reiniciar) (Paciencia* self);
     void (*finaliza) (Paciencia* self);
@@ -40,6 +45,7 @@ static int isFimDeJogo(Paciencia* paciencia);
 
 static int paciencia_movimento1(Paciencia* paciencia, int tipo_pilha, int pilha_id);
 static int paciencia_movimento2(Paciencia* paciencia, int fileira_id, int pilha_naipe_id);
+static int paciencia_movimento3(Paciencia* paciencia, int fileira_origem_id, int fileira_destino_id, int posicao_carta);
 
 Paciencia* inicializa_paciencia(int* estado_de_jogo) {
     Paciencia* paciencia = (Paciencia*)malloc(sizeof(Paciencia));
@@ -68,6 +74,9 @@ Paciencia* inicializa_paciencia(int* estado_de_jogo) {
 
     // Funcoes
     paciencia->finaliza = paciencia_finaliza;
+    paciencia->movimento1 = paciencia_movimento1;
+    paciencia->movimento2 = paciencia_movimento2;
+    paciencia->movimento3 = paciencia_movimento3;
 
     return paciencia;
 }
