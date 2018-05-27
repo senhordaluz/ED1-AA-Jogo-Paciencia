@@ -11,7 +11,13 @@
 #include <string.h>
 
 #include "paciencia.h"
+
 #include "carta.h"
+#include "pilha.h"
+#include "pilha_estoque.h"
+#include "pilha_naipe.h"
+#include "pilha_descarte.h"
+#include "pilha_fileira.h"
 
 #define VERSAO  "VERSAO - 1.0.0"
 
@@ -129,6 +135,8 @@ void Roda_Jogo(void) {
         if ( paciencia->isFimDeJogo(paciencia) )
             paciencia->tela_atual = FIM_DE_JOGO;
     }
+
+    puts("Fim de Jogo!");
 }
 
 void Interface_Mostra_Tela(Paciencia* paciencia) {
