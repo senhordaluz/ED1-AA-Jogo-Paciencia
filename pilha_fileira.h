@@ -370,9 +370,6 @@ static void pilhas_fileira_toStringCarta(Pilhas_Fileira* pilhas_fileira, char* s
         return;
     }
 
-    int maior_pilha_id = pilhas_fileira_maior_pilha_id(pilhas_fileira);
-    int maior_topo_de_pilha = pilhas_fileira->pilha[maior_pilha_id]->topo;
-
     if ( carta_id < pilhas_fileira->carta_virada[fileira_id] )
         strcat(string, "Carta Virada");
     else if (pilhas_fileira->pilha[fileira_id]->topo >= carta_id ) {

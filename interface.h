@@ -85,7 +85,7 @@ static void _interface_mostra_tela_jogo(Paciencia* paciencia);
 static void _interface_mostra_tela_fim_de_jogo(Paciencia* paciencia);
 
 static void _interface_monta_cabecalho(void);
-static int _interface_monta_baralho_em_tela(Paciencia* paciencia);
+static void _interface_monta_baralho_em_tela(Paciencia* paciencia);
 static void _interface_monta_baralho_preenche_vazios(char* string, int tamanho);
 static void _interface_monta_mensagem_fim_de_jogo(void);
 
@@ -225,7 +225,7 @@ static void _interface_monta_cabecalho(void) {
 }
 
 // Monta baralho com todas a pilhas em tela
-static int _interface_monta_baralho_em_tela(Paciencia* paciencia) {
+static void _interface_monta_baralho_em_tela(Paciencia* paciencia) {
     char tela[SCREEN_BUFFER_SIZE] = "";
     char linha[BUFFER_SIZE] = "";
     char buffer[BUFFER_SIZE] = "";
@@ -725,7 +725,7 @@ static void _interface_tela_jogo_opcoes_movimento1_fileira(Paciencia* paciencia,
 // Controle de opcoes do movimento 1 para pilhas de naipe:
 // Retirar uma carta da pilha de estoque e empilha na pilha de descarte
 static void _interface_tela_jogo_opcoes_movimento1_descarte(Paciencia* paciencia, int* escolha_movimento) {
-    int sucesso = paciencia->movimento1(paciencia, PILHA_DESCARTE, NULL);
+    int sucesso = paciencia->movimento1(paciencia, PILHA_DESCARTE, 0);
     if (sucesso)
         *escolha_movimento = MOVIMENTO_SUCESSO;
     else
@@ -1006,7 +1006,7 @@ static int _interface_controle_escolha_carta(Paciencia* paciencia, int fileira_o
         } 
 
         if (!result)
-            printf("\Carta Invalida!\nTente novamente\n : ");
+            printf("Carta Invalida!\nTente novamente\n : ");
     } while (!result);
     return carta_escolhida;
 }
