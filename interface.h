@@ -506,23 +506,23 @@ static void _interface_tela_jogo_opcoes_movimento1_naipe(Paciencia* paciencia, i
 
     int sucesso;
     switch (opcao_escolhida) {
-        case 1: // Colocar carta na pilha de naipe
+        case 1: // Colocar carta na pilha de naipe 1
             *escolha_movimento = PROXIMA_ESCOLHA;
             sucesso = paciencia->movimento1(paciencia, PILHA_NAIPE, 0);
             break;
-        case 2: // Colocar carta numa pilha fileira
+        case 2: // Colocar carta numa pilha de naipe 2
             *escolha_movimento = PROXIMA_ESCOLHA;
             sucesso = paciencia->movimento1(paciencia, PILHA_NAIPE, 1);
             break;
-        case 3: // Colocar carta na pilha de descarte
+        case 3: // Colocar carta na pilha de naipe 3
             *escolha_movimento = PROXIMA_ESCOLHA;
             sucesso = paciencia->movimento1(paciencia, PILHA_NAIPE, 2);
             break;
-        case 4: // Volta para opcoes da pilha de estoque
+        case 4: // Volta para opcoes da pilha de naipe 4
             *escolha_movimento = PROXIMA_ESCOLHA;
             sucesso = paciencia->movimento1(paciencia, PILHA_NAIPE, 3);
             break;
-        case 5: // Volta para opcoes da pilha de estoque
+        case 5: // Volta para opcoes
             *escolha_movimento = MOVIMENTO_1;
             return;
     }
@@ -535,7 +535,66 @@ static void _interface_tela_jogo_opcoes_movimento1_naipe(Paciencia* paciencia, i
 // Controle de opcoes do movimento 1 para pilhas de naipe:
 // Retirar uma carta da pilha de estoque e empilha numa das pilhas de fileira
 static void _interface_tela_jogo_opcoes_movimento1_fileira(Paciencia* paciencia, int* escolha_movimento) {
-    
+    char tela[SCREEN_BUFFER_SIZE] = "";
+
+    _interface_adiciona_linha(tela, " Voce escolheu ");
+    _interface_adiciona_linha(tela, " Retirar um carta da pilha de estoque e move-la para a pilha de naipes ");
+    _interface_adiciona_linha_vazia(tela);
+    _interface_adiciona_linha(tela, " Selecione uma pilha de naipe: ");
+    _interface_adiciona_linha(tela, " [1]: Pilha Fileira 1");
+    _interface_adiciona_linha(tela, " [2]: Pilha Fileira 2");
+    _interface_adiciona_linha(tela, " [3]: Pilha Fileira 3");
+    _interface_adiciona_linha(tela, " [4]: Pilha Fileira 4");
+    _interface_adiciona_linha(tela, " [5]: Pilha Fileira 5");
+    _interface_adiciona_linha(tela, " [6]: Pilha Fileira 6");
+    _interface_adiciona_linha(tela, " [7]: Pilha Fileira 7");
+    _interface_adiciona_linha(tela, " [8]: Voltar");
+
+    _interface_adiciona_linha_vazia(tela);
+
+    // Exibe tela
+    puts(tela);
+
+    int opcao_escolhida = _interface_controle_entrada_opcoes(8);
+
+    int sucesso;
+    switch (opcao_escolhida) {
+        case 1: // Colocar carta na pilha fileira 1
+            *escolha_movimento = PROXIMA_ESCOLHA;
+            sucesso = paciencia->movimento1(paciencia, PILHA_FILEIRA, 0);
+            break;
+        case 2: // Colocar carta na pilha fileira 2
+            *escolha_movimento = PROXIMA_ESCOLHA;
+            sucesso = paciencia->movimento1(paciencia, PILHA_FILEIRA, 1);
+            break;
+        case 3: // Colocar carta na pilha fileira 3
+            *escolha_movimento = PROXIMA_ESCOLHA;
+            sucesso = paciencia->movimento1(paciencia, PILHA_FILEIRA, 2);
+            break;
+        case 4: // Colocar carta na pilha fileira 4
+            *escolha_movimento = PROXIMA_ESCOLHA;
+            sucesso = paciencia->movimento1(paciencia, PILHA_FILEIRA, 3);
+            break;
+        case 5: // Colocar carta na pilha fileira 5
+            *escolha_movimento = PROXIMA_ESCOLHA;
+            sucesso = paciencia->movimento1(paciencia, PILHA_FILEIRA, 4);
+            break;
+        case 6: // Colocar carta na pilha fileira 6
+            *escolha_movimento = PROXIMA_ESCOLHA;
+            sucesso = paciencia->movimento1(paciencia, PILHA_FILEIRA, 5);
+            break;
+        case 7: // Colocar carta na pilha fileira 7
+            *escolha_movimento = PROXIMA_ESCOLHA;
+            sucesso = paciencia->movimento1(paciencia, PILHA_FILEIRA, 6);
+            break;
+        case 8: // Volta para opcoes da pilha de estoque
+            *escolha_movimento = MOVIMENTO_1;
+            return;
+    }
+    if (sucesso)
+        *escolha_movimento = MOVIMENTO_SUCESSO;
+    else
+        *escolha_movimento = MOVIMENTO_FALHA;
 }
 
 // Controle de opcoes do movimento 1 para pilhas de naipe:
