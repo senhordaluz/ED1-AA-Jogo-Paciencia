@@ -19,6 +19,7 @@
 #define TELA_INICIO     0
 #define TELA_JOGO       1
 #define TELA_CREDITOS   2
+#define FIM_DE_JOGO     3
 #define SAIR            4
 
 // Opcoes internas do jogo
@@ -39,6 +40,14 @@
 #define MOVIMENTO_2_NAIPE_FILEIRA_6     26
 #define MOVIMENTO_2_NAIPE_FILEIRA_7     27
 
+#define MOVIMENTO_3_NAIPE_FILEIRA_1     31
+#define MOVIMENTO_3_NAIPE_FILEIRA_2     32
+#define MOVIMENTO_3_NAIPE_FILEIRA_3     33
+#define MOVIMENTO_3_NAIPE_FILEIRA_4     34
+#define MOVIMENTO_3_NAIPE_FILEIRA_5     35
+#define MOVIMENTO_3_NAIPE_FILEIRA_6     36
+#define MOVIMENTO_3_NAIPE_FILEIRA_7     37
+
 #define PROXIMA_ESCOLHA         99
 #define MOVIMENTO_SUCESSO       100
 #define MOVIMENTO_FALHA         101
@@ -48,6 +57,24 @@
 #define BUFFER_SIZE         5000
 #define SCREEN_BUFFER_SIZE  400000
 
+// Cores para o console
+#define PRETO   '0'
+#define AZUL    '1'
+#define VERDE   '2'
+#define AQUA    '3'
+#define VERMELHO    '4'
+#define VIOLETA     '5'
+#define AMARELO     '6'
+#define BRANCO      '7'
+#define CINZA       '8'
+#define AZUL_CLARO  '9'
+#define VERDE_CLARO 'A'
+#define AQUA_CLARO  'B'
+#define VERMELHO_CLARO  'C'
+#define VIOLETA_CLARO   'D'
+#define AMARELO_CLARO   'E'
+#define BRANCO_CLARO    'F'
+
 // ***********************************************************************************************************
 
 void Roda_Jogo(void);
@@ -55,12 +82,15 @@ void Interface_Mostra_Tela(Paciencia* paciencia);
 
 static void _interface_mostra_tela_principal(Paciencia* paciencia);
 static void _interface_mostra_tela_jogo(Paciencia* paciencia);
+static void _interface_mostra_tela_fim_de_jogo(Paciencia* paciencia);
 
 static void _interface_monta_cabecalho(void);
 static int _interface_monta_baralho_em_tela(Paciencia* paciencia);
 static void _interface_monta_baralho_preenche_vazios(char* string, int tamanho);
+static void _interface_monta_mensagem_fim_de_jogo(void);
 
 static void _interface_limpa_tela(void);
+static void _interface_muda_cor_console(char cor_fonte, char cor_fundo);
 static void _interface_adiciona_linha_vazia(char* tela);
 static void _interface_monta_linha_separacao(char* tela);
 static void _interface_limpa_buffer(char* buffer);
@@ -77,8 +107,11 @@ static void _interface_tela_jogo_opcoes_movimento1_descarte(Paciencia* paciencia
 static void _interface_tela_jogo_opcoes_movimento2(Paciencia* paciencia, int* escolha_movimento);
 static void _interface_tela_jogo_opcoes_movimento2_naipe(Paciencia* paciencia, int* escolha_movimento, int fileira);
 static void _interface_tela_jogo_opcoes_movimento3(Paciencia* paciencia, int* escolha_movimento);
+static void _interface_tela_jogo_opcoes_movimento3_fileira_destino(Paciencia* paciencia, int* escolha_movimento, int fileira_origem);
+static void _interface_tela_fim_de_jogo_opcoes(Paciencia* paciencia);
 
 static int _interface_controle_entrada_opcoes(int opcoes_validas);
+static int _interface_controle_escolha_carta(Paciencia* paciencia, int fileira_origem);
 static void myflush(FILE *in);
 static void mypause(void);
 static int _interface_controle_pressione_enter_para_continuar(int sucesso);
@@ -86,11 +119,15 @@ static int _interface_controle_pressione_enter_para_continuar(int sucesso);
 // ***********************************************************************************************************
 
 void Roda_Jogo(void) {
+    _interface_muda_cor_console(AMARELO_CLARO, AZUL);
+
     int jogoRodando = 1;
     Paciencia* paciencia = inicializa_paciencia(&jogoRodando);
 
     while (jogoRodando) {
         Interface_Mostra_Tela(paciencia);
+        if ( paciencia->isFimDeJogo(paciencia) )
+            paciencia->tela_atual = FIM_DE_JOGO;
     }
 }
 
@@ -102,6 +139,8 @@ void Interface_Mostra_Tela(Paciencia* paciencia) {
             return _interface_mostra_tela_jogo(paciencia);
         case TELA_CREDITOS: // Redireciona para tela principal para testes
             return _interface_mostra_tela_principal(paciencia);
+        case FIM_DE_JOGO:
+            return _interface_mostra_tela_fim_de_jogo(paciencia);
         case SAIR:
             return paciencia->finaliza(paciencia);
     }
@@ -138,6 +177,18 @@ static void _interface_mostra_tela_jogo(Paciencia* paciencia) {
         // Exibe opcoes
         _interface_tela_jogo_opcoes(paciencia, &escolha_movimento);
     } while (escolha_movimento != PROXIMA_ESCOLHA);
+}
+
+// Fim de jogo
+static void _interface_mostra_tela_fim_de_jogo(Paciencia* paciencia) {
+    _interface_limpa_tela();
+
+    _interface_monta_cabecalho();
+
+    _interface_monta_mensagem_fim_de_jogo();
+
+    // Exibe opcoes
+    _interface_tela_fim_de_jogo_opcoes(paciencia);
 }
 
 // ***********************************************************************************************************
@@ -241,9 +292,6 @@ static int _interface_monta_baralho_em_tela(Paciencia* paciencia) {
     _interface_preenche_lados(linha, "|                          |                          |                          |                          |                          |                          |                          |");
     _interface_adiciona_linha(tela, linha);
 
-    // "|     [0]: Rei de ouro     |"
-    // "|   [1]: Valete de ouro  |"
-
     // Monta fileiras
     int maior_pilha_id = pilhas_fileira->maiorPilhaID(pilhas_fileira);
     int maior_topo_de_pilha = pilhas_fileira->pilha[maior_pilha_id]->topo;
@@ -265,6 +313,10 @@ static int _interface_monta_baralho_em_tela(Paciencia* paciencia) {
 
     _interface_preenche_lados(linha, "|                          |                          |                          |                          |                          |                          |                          |");
     _interface_adiciona_linha(tela, linha);
+
+    _interface_adiciona_linha_vazia(tela);
+    _interface_adiciona_linha_vazia(tela);
+    _interface_monta_linha_separacao(tela);
 
     // Preenche tela
     puts(tela);
@@ -291,6 +343,25 @@ static void _interface_monta_baralho_preenche_vazios(char* string, int tamanho) 
     strcpy(string, buffer);
 }
 
+// Mostra mensagem de fim de jogo
+static void _interface_monta_mensagem_fim_de_jogo(void) {
+    char tela[SCREEN_BUFFER_SIZE] = "";
+    char linha[BUFFER_SIZE] = "";
+
+    _interface_adiciona_linha_vazia(tela);
+
+    _interface_preenche_lados(linha, "O JOGO CHEGOU AO FIM");
+    _interface_adiciona_linha(tela, linha);
+
+    _interface_adiciona_linha_vazia(tela);
+    _interface_adiciona_linha_vazia(tela);
+
+    _interface_monta_linha_separacao(tela);
+
+    // Preenche tela
+    puts(tela);
+}
+
 
 // ***********************************************************************************************************
 
@@ -307,6 +378,13 @@ static void _interface_limpa_tela(void) {
     system("clear");
     #endif
     puts("");
+}
+
+static void _interface_muda_cor_console(char cor_fonte, char cor_fundo) {
+    char buffer[BUFFER_SIZE] = "";
+
+    snprintf(buffer, BUFFER_SIZE, "COLOR %c%c", cor_fundo, cor_fonte);
+    system(buffer);
 }
 
 static void _interface_adiciona_linha_vazia(char* tela) {
@@ -425,6 +503,21 @@ static void _interface_tela_jogo_opcoes(Paciencia* paciencia, int* escolha_movim
         // Movimento 3
         case MOVIMENTO_3:
             return _interface_tela_jogo_opcoes_movimento3(paciencia, escolha_movimento);
+        // Internas do movimento 3
+        case MOVIMENTO_3_NAIPE_FILEIRA_1:
+            return _interface_tela_jogo_opcoes_movimento3_fileira_destino(paciencia, escolha_movimento, 0);
+        case MOVIMENTO_3_NAIPE_FILEIRA_2:
+            return _interface_tela_jogo_opcoes_movimento3_fileira_destino(paciencia, escolha_movimento, 1);
+        case MOVIMENTO_3_NAIPE_FILEIRA_3:
+            return _interface_tela_jogo_opcoes_movimento3_fileira_destino(paciencia, escolha_movimento, 2);
+        case MOVIMENTO_3_NAIPE_FILEIRA_4:
+            return _interface_tela_jogo_opcoes_movimento3_fileira_destino(paciencia, escolha_movimento, 3);
+        case MOVIMENTO_3_NAIPE_FILEIRA_5:
+            return _interface_tela_jogo_opcoes_movimento3_fileira_destino(paciencia, escolha_movimento, 4);
+        case MOVIMENTO_3_NAIPE_FILEIRA_6:
+            return _interface_tela_jogo_opcoes_movimento3_fileira_destino(paciencia, escolha_movimento, 5);
+        case MOVIMENTO_3_NAIPE_FILEIRA_7:
+            return _interface_tela_jogo_opcoes_movimento3_fileira_destino(paciencia, escolha_movimento, 6);
 
         // Fim de movimento
         case MOVIMENTO_SUCESSO:
@@ -742,8 +835,129 @@ static void _interface_tela_jogo_opcoes_movimento2_naipe(Paciencia* paciencia, i
         *escolha_movimento = MOVIMENTO_FALHA;
 }
 
+// Controle de opcoes do movimento 3:
+// Retirar n cartas que estejam viradas para cima em uma pilha de fileira e transporta-las para uma outra fileira. (este movimento pode virar a carta do novo topo)
 static void _interface_tela_jogo_opcoes_movimento3(Paciencia* paciencia, int* escolha_movimento) {
+    char tela[SCREEN_BUFFER_SIZE] = "";
 
+    _interface_adiciona_linha(tela, " Voce escolheu ");
+    _interface_adiciona_linha(tela, " Retirar n cartas que estejam viradas para cima em uma pilha de fileira e transporta-las para uma outra fileira ");
+    _interface_adiciona_linha_vazia(tela);
+    _interface_adiciona_linha(tela, " Selecione uma pilha fileira de origem: ");
+    _interface_adiciona_linha(tela, " [1]: Pilha Fileira 1");
+    _interface_adiciona_linha(tela, " [2]: Pilha Fileira 2");
+    _interface_adiciona_linha(tela, " [3]: Pilha Fileira 3");
+    _interface_adiciona_linha(tela, " [4]: Pilha Fileira 4");
+    _interface_adiciona_linha(tela, " [5]: Pilha Fileira 5");
+    _interface_adiciona_linha(tela, " [6]: Pilha Fileira 6");
+    _interface_adiciona_linha(tela, " [7]: Pilha Fileira 7");
+    _interface_adiciona_linha(tela, " [8]: Voltar");
+
+    _interface_adiciona_linha_vazia(tela);
+
+    // Exibe tela
+    puts(tela);
+
+    int opcao_escolhida = _interface_controle_entrada_opcoes(8);
+
+    switch (opcao_escolhida) {
+        case 1: // Retirar carta da pilha fileira 1
+            *escolha_movimento = MOVIMENTO_3_NAIPE_FILEIRA_1;
+            break;
+        case 2: // Retirar carta da pilha fileira 2
+            *escolha_movimento = MOVIMENTO_3_NAIPE_FILEIRA_2;
+            break;
+        case 3: // Retirar carta da pilha fileira 3
+            *escolha_movimento = MOVIMENTO_3_NAIPE_FILEIRA_3;
+            break;
+        case 4: // Retirar carta da pilha fileira 4
+            *escolha_movimento = MOVIMENTO_3_NAIPE_FILEIRA_4;
+            break;
+        case 5: // Retirar carta da pilha fileira 5
+            *escolha_movimento = MOVIMENTO_3_NAIPE_FILEIRA_5;
+            break;
+        case 6: // Retirar carta da pilha fileira 6
+            *escolha_movimento = MOVIMENTO_3_NAIPE_FILEIRA_6;
+            break;
+        case 7: // Retirar carta da pilha fileira 7
+            *escolha_movimento = MOVIMENTO_3_NAIPE_FILEIRA_7;
+            break;
+        case 8: // Volta para opcoes da pilha de estoque
+            *escolha_movimento = ESCOLHA_MOVIMENTO;
+            break;
+    }
+}
+
+// Controle de opcoes do movimento 3 - controle de pilha de destino:
+// Retirar n cartas que estejam viradas para cima em uma pilha de fileira e transporta-las para uma outra fileira. (este movimento pode virar a carta do novo topo)
+static void _interface_tela_jogo_opcoes_movimento3_fileira_destino(Paciencia* paciencia, int* escolha_movimento, int fileira_origem) {
+    char tela[SCREEN_BUFFER_SIZE] = "";
+    char buffer[BUFFER_SIZE] = "";
+
+    _interface_adiciona_linha(tela, " Voce escolheu ");
+    snprintf(buffer, BUFFER_SIZE, " Retirar n cartas que estejam viradas para cima na pilha de FILEIRA %d e transporta-las para uma outra fileira ", fileira_origem+1);
+    _interface_adiciona_linha(tela, buffer);
+    _interface_adiciona_linha_vazia(tela);
+    _interface_adiciona_linha(tela, " Selecione uma pilha fileira de destino: ");
+    _interface_adiciona_linha(tela, " [1]: Pilha Fileira 1");
+    _interface_adiciona_linha(tela, " [2]: Pilha Fileira 2");
+    _interface_adiciona_linha(tela, " [3]: Pilha Fileira 3");
+    _interface_adiciona_linha(tela, " [4]: Pilha Fileira 4");
+    _interface_adiciona_linha(tela, " [5]: Pilha Fileira 5");
+    _interface_adiciona_linha(tela, " [6]: Pilha Fileira 6");
+    _interface_adiciona_linha(tela, " [7]: Pilha Fileira 7");
+    _interface_adiciona_linha(tela, " [8]: Voltar");
+
+    _interface_adiciona_linha_vazia(tela);
+
+    // Exibe tela
+    puts(tela);
+
+    int fileira_destino = _interface_controle_entrada_opcoes(8);
+
+    if (fileira_destino == 8) {
+        *escolha_movimento = MOVIMENTO_3;
+        return;
+    } else {
+        puts(" Agora digite o numero da carta que deseja mover: ");
+        int posicao_carta = _interface_controle_escolha_carta(paciencia, fileira_origem);
+        fileira_destino--;
+        int sucesso = paciencia->movimento3(paciencia, fileira_origem, fileira_destino, posicao_carta);
+        if (sucesso)
+        *escolha_movimento = MOVIMENTO_SUCESSO;
+        else
+            *escolha_movimento = MOVIMENTO_FALHA;
+    }
+}
+
+// Opcoes de fim de jogo
+static void _interface_tela_fim_de_jogo_opcoes(Paciencia* paciencia) {
+    char tela[SCREEN_BUFFER_SIZE] = "";
+
+    _interface_adiciona_linha(tela, " Selecione uma opcao: ");
+    _interface_adiciona_linha(tela, " [1]: Iniciar novo jogo");
+    _interface_adiciona_linha(tela, " [2]: Creditos");
+    _interface_adiciona_linha(tela, " [3]: Sair");
+
+    _interface_adiciona_linha_vazia(tela);
+
+    // Exibe tela
+    puts(tela);
+
+    int opcao_escolhida = _interface_controle_entrada_opcoes(3);
+
+    switch (opcao_escolhida) {
+        case 1: // Inicial novo jogo
+            paciencia->reiniciar(paciencia);
+            paciencia->tela_atual = TELA_JOGO;
+            break;
+        case 2: // Creditos
+            paciencia->tela_atual = TELA_CREDITOS;
+            break;
+        case 3: // Sair
+            paciencia->tela_atual = SAIR;
+            break;
+    }
 }
 
 // ***********************************************************************************************************
@@ -768,6 +982,33 @@ static int _interface_controle_entrada_opcoes(int opcoes_validas) {
             printf("\nOpcao Incorreta!\nTente novamente\n : ");
     } while (!result);
     return opcao_escolhida;
+}
+
+static int _interface_controle_escolha_carta(Paciencia* paciencia, int fileira_origem) {
+    printf(": ");
+
+    Pilhas_Fileira* pilhas_fileira = paciencia->pilhas_fileira;
+    int carta_minima = pilhas_fileira->carta_virada[fileira_origem];
+    int carta_maxima = pilhas_fileira->pilha[fileira_origem]->topo;
+
+    int carta_escolhida;
+    int result = 0;
+
+    do {
+        result = scanf("%d", &carta_escolhida);
+
+        if ( carta_minima == carta_maxima ) {
+            if ( carta_escolhida != carta_minima )
+                result = 0;
+        } else {
+            if (carta_escolhida < carta_minima || carta_escolhida > carta_maxima)
+                result = 0;
+        } 
+
+        if (!result)
+            printf("\Carta Invalida!\nTente novamente\n : ");
+    } while (!result);
+    return carta_escolhida;
 }
 
 static void myflush(FILE *in) {

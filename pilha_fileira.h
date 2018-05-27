@@ -245,6 +245,10 @@ static int pilhas_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_orige
 
     {
         Carta* carta_topo = pilha_origem->cartas[posicao_carta];
+        if ( !carta_topo ) {
+            printf("Carta invalida!\n");
+            return 0;
+        }
         if ( !pilha_fileira_movimentacao_valida(pilha_destino, carta_topo) ) {
             printf("Movimento invalido!\n");
             return 0;

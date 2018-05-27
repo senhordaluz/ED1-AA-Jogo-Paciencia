@@ -29,8 +29,8 @@ struct paciencia {
 
     // Momvimentos de jogo
     int (*movimento1) (Paciencia* self, int tipo_pilha, int pilha_id);
-    int (*movimento2) (Paciencia* self, int tipo_pilha, int pilha_id);
-    int (*movimento3) (Paciencia* self, int tipo_pilha, int pilha_id);
+    int (*movimento2) (Paciencia* self, int fileira_id, int pilha_naipe_id);
+    int (*movimento3) (Paciencia* self, int fileira_origem_id, int fileira_destino_id, int posicao_carta);
 
     // Funcoes
     void (*reiniciar) (Paciencia* self);
