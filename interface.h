@@ -23,12 +23,22 @@
 
 // Opcoes internas do jogo
 #define ESCOLHA_MOVIMENTO   0
-#define MOVIMENTO_1         1
-#define MOVIMENTO_2         2
-#define MOVIMENTO_3         3
-#define MOVIMENTO_1_NAIPE       4
-#define MOVIMENTO_1_FILEIRA     5
-#define MOVIMENTO_1_DESCARTE    6
+#define MOVIMENTO_1         10
+#define MOVIMENTO_2         20
+#define MOVIMENTO_3         30
+
+#define MOVIMENTO_1_NAIPE       11
+#define MOVIMENTO_1_FILEIRA     12
+#define MOVIMENTO_1_DESCARTE    13
+
+#define MOVIMENTO_2_NAIPE_FILEIRA_1     21
+#define MOVIMENTO_2_NAIPE_FILEIRA_2     22
+#define MOVIMENTO_2_NAIPE_FILEIRA_3     23
+#define MOVIMENTO_2_NAIPE_FILEIRA_4     24
+#define MOVIMENTO_2_NAIPE_FILEIRA_5     25
+#define MOVIMENTO_2_NAIPE_FILEIRA_6     26
+#define MOVIMENTO_2_NAIPE_FILEIRA_7     27
+
 #define PROXIMA_ESCOLHA         99
 #define MOVIMENTO_SUCESSO       100
 #define MOVIMENTO_FALHA         101
@@ -65,6 +75,7 @@ static void _interface_tela_jogo_opcoes_movimento1_naipe(Paciencia* paciencia, i
 static void _interface_tela_jogo_opcoes_movimento1_fileira(Paciencia* paciencia, int* escolha_movimento);
 static void _interface_tela_jogo_opcoes_movimento1_descarte(Paciencia* paciencia, int* escolha_movimento);
 static void _interface_tela_jogo_opcoes_movimento2(Paciencia* paciencia, int* escolha_movimento);
+static void _interface_tela_jogo_opcoes_movimento2_naipe(Paciencia* paciencia, int* escolha_movimento, int fileira);
 static void _interface_tela_jogo_opcoes_movimento3(Paciencia* paciencia, int* escolha_movimento);
 
 static int _interface_controle_entrada_opcoes(int opcoes_validas);
@@ -380,9 +391,11 @@ static void _interface_tela_jogo_opcoes(Paciencia* paciencia, int* escolha_movim
     switch (*escolha_movimento) {
         case ESCOLHA_MOVIMENTO:
             return _interface_tela_jogo_opcoes_lista(paciencia, escolha_movimento);
+        
+        // Movimento 1:
         case MOVIMENTO_1:
             return _interface_tela_jogo_opcoes_movimento1(paciencia, escolha_movimento);
-
+        // Internas do movimento 1
         case MOVIMENTO_1_NAIPE:
             return _interface_tela_jogo_opcoes_movimento1_naipe(paciencia, escolha_movimento);
         case MOVIMENTO_1_FILEIRA:
@@ -390,11 +403,30 @@ static void _interface_tela_jogo_opcoes(Paciencia* paciencia, int* escolha_movim
         case MOVIMENTO_1_DESCARTE:
             return _interface_tela_jogo_opcoes_movimento1_descarte(paciencia, escolha_movimento);
 
+        // Movimento 2:
         case MOVIMENTO_2:
             return _interface_tela_jogo_opcoes_movimento2(paciencia, escolha_movimento);
+        // Internas do movimento 2
+        case MOVIMENTO_2_NAIPE_FILEIRA_1:
+            return _interface_tela_jogo_opcoes_movimento2_naipe(paciencia, escolha_movimento, 0);
+        case MOVIMENTO_2_NAIPE_FILEIRA_2:
+            return _interface_tela_jogo_opcoes_movimento2_naipe(paciencia, escolha_movimento, 1);
+        case MOVIMENTO_2_NAIPE_FILEIRA_3:
+            return _interface_tela_jogo_opcoes_movimento2_naipe(paciencia, escolha_movimento, 2);
+        case MOVIMENTO_2_NAIPE_FILEIRA_4:
+            return _interface_tela_jogo_opcoes_movimento2_naipe(paciencia, escolha_movimento, 3);
+        case MOVIMENTO_2_NAIPE_FILEIRA_5:
+            return _interface_tela_jogo_opcoes_movimento2_naipe(paciencia, escolha_movimento, 4);
+        case MOVIMENTO_2_NAIPE_FILEIRA_6:
+            return _interface_tela_jogo_opcoes_movimento2_naipe(paciencia, escolha_movimento, 5);
+        case MOVIMENTO_2_NAIPE_FILEIRA_7:
+            return _interface_tela_jogo_opcoes_movimento2_naipe(paciencia, escolha_movimento, 6);
+
+        // Movimento 3
         case MOVIMENTO_3:
             return _interface_tela_jogo_opcoes_movimento3(paciencia, escolha_movimento);
 
+        // Fim de movimento
         case MOVIMENTO_SUCESSO:
             if ( _interface_controle_pressione_enter_para_continuar(1) )
                 *escolha_movimento = ESCOLHA_MOVIMENTO;
@@ -607,8 +639,107 @@ static void _interface_tela_jogo_opcoes_movimento1_descarte(Paciencia* paciencia
         *escolha_movimento = MOVIMENTO_FALHA;
 }
 
+// Controle de opcoes do movimento 2:
+// Retirar 1 carta virada para cima no topo de uma pilha de fileira e empilha-la em uma pilha de naipes
 static void _interface_tela_jogo_opcoes_movimento2(Paciencia* paciencia, int* escolha_movimento) {
+    char tela[SCREEN_BUFFER_SIZE] = "";
 
+    _interface_adiciona_linha(tela, " Voce escolheu ");
+    _interface_adiciona_linha(tela, " Retirar 1 carta virada para cima no topo de uma pilha de fileira e empilha-la em uma pilha de naipes ");
+    _interface_adiciona_linha_vazia(tela);
+    _interface_adiciona_linha(tela, " Selecione uma pilha fileira: ");
+    _interface_adiciona_linha(tela, " [1]: Pilha Fileira 1");
+    _interface_adiciona_linha(tela, " [2]: Pilha Fileira 2");
+    _interface_adiciona_linha(tela, " [3]: Pilha Fileira 3");
+    _interface_adiciona_linha(tela, " [4]: Pilha Fileira 4");
+    _interface_adiciona_linha(tela, " [5]: Pilha Fileira 5");
+    _interface_adiciona_linha(tela, " [6]: Pilha Fileira 6");
+    _interface_adiciona_linha(tela, " [7]: Pilha Fileira 7");
+    _interface_adiciona_linha(tela, " [8]: Voltar");
+
+    _interface_adiciona_linha_vazia(tela);
+
+    // Exibe tela
+    puts(tela);
+
+    int opcao_escolhida = _interface_controle_entrada_opcoes(8);
+
+    switch (opcao_escolhida) {
+        case 1: // Retirar carta da pilha fileira 1
+            *escolha_movimento = MOVIMENTO_2_NAIPE_FILEIRA_1;
+            break;
+        case 2: // Retirar carta da pilha fileira 2
+            *escolha_movimento = MOVIMENTO_2_NAIPE_FILEIRA_2;
+            break;
+        case 3: // Retirar carta da pilha fileira 3
+            *escolha_movimento = MOVIMENTO_2_NAIPE_FILEIRA_3;
+            break;
+        case 4: // Retirar carta da pilha fileira 4
+            *escolha_movimento = MOVIMENTO_2_NAIPE_FILEIRA_4;
+            break;
+        case 5: // Retirar carta da pilha fileira 5
+            *escolha_movimento = MOVIMENTO_2_NAIPE_FILEIRA_5;
+            break;
+        case 6: // Retirar carta da pilha fileira 6
+            *escolha_movimento = MOVIMENTO_2_NAIPE_FILEIRA_6;
+            break;
+        case 7: // Retirar carta da pilha fileira 7
+            *escolha_movimento = MOVIMENTO_2_NAIPE_FILEIRA_7;
+            break;
+        case 8: // Volta para opcoes da pilha de estoque
+            *escolha_movimento = ESCOLHA_MOVIMENTO;
+            break;
+    }
+}
+
+// Controle de opcoes do movimento 2 - escolha da pilha de naipe:
+// Retirar 1 carta virada para cima no topo de uma pilha de fileira e empilha-la em uma pilha de naipes
+static void _interface_tela_jogo_opcoes_movimento2_naipe(Paciencia* paciencia, int* escolha_movimento, int fileira) {
+    char tela[SCREEN_BUFFER_SIZE] = "";
+
+    _interface_adiciona_linha(tela, " Voce escolheu ");
+    _interface_adiciona_linha(tela, " Retirar 1 carta virada para cima no topo de uma pilha de fileira e empilha-la em uma pilha de naipes ");
+    _interface_adiciona_linha_vazia(tela);
+    _interface_adiciona_linha(tela, " Selecione uma pilha de naipe: ");
+    _interface_adiciona_linha(tela, " [1]: Pilha de Naipe 1");
+    _interface_adiciona_linha(tela, " [2]: Pilha de Naipe 2");
+    _interface_adiciona_linha(tela, " [3]: Pilha de Naipe 3");
+    _interface_adiciona_linha(tela, " [4]: Pilha de Naipe 4");
+    _interface_adiciona_linha(tela, " [5]: Voltar");
+
+    _interface_adiciona_linha_vazia(tela);
+
+    // Exibe tela
+    puts(tela);
+
+    int opcao_escolhida = _interface_controle_entrada_opcoes(5);
+
+    int sucesso;
+    switch (opcao_escolhida) {
+        case 1: // Colocar carta na pilha de naipe 1
+            *escolha_movimento = PROXIMA_ESCOLHA;
+            sucesso = paciencia->movimento2(paciencia, fileira, 0);
+            break;
+        case 2: // Colocar carta numa pilha de naipe 2
+            *escolha_movimento = PROXIMA_ESCOLHA;
+            sucesso = paciencia->movimento2(paciencia, fileira, 1);
+            break;
+        case 3: // Colocar carta na pilha de naipe 3
+            *escolha_movimento = PROXIMA_ESCOLHA;
+            sucesso = paciencia->movimento2(paciencia, fileira, 2);
+            break;
+        case 4: // Volta para opcoes da pilha de naipe 4
+            *escolha_movimento = PROXIMA_ESCOLHA;
+            sucesso = paciencia->movimento2(paciencia, fileira, 3);
+            break;
+        case 5: // Volta para opcoes
+            *escolha_movimento = MOVIMENTO_2;
+            return;
+    }
+    if (sucesso)
+        *escolha_movimento = MOVIMENTO_SUCESSO;
+    else
+        *escolha_movimento = MOVIMENTO_FALHA;
 }
 
 static void _interface_tela_jogo_opcoes_movimento3(Paciencia* paciencia, int* escolha_movimento) {
