@@ -40,6 +40,7 @@
 
 // ***********************************************************************************************************
 
+void Roda_Jogo(void);
 void Interface_Mostra_Tela(Paciencia* paciencia);
 
 static void _interface_mostra_tela_principal(Paciencia* paciencia);
@@ -72,6 +73,15 @@ static void mypause(void);
 static int _interface_controle_pressione_enter_para_continuar(int sucesso);
 
 // ***********************************************************************************************************
+
+void Roda_Jogo(void) {
+    int jogoRodando = 1;
+    Paciencia* paciencia = inicializa_paciencia(&jogoRodando);
+
+    while (jogoRodando) {
+        Interface_Mostra_Tela(paciencia);
+    }
+}
 
 void Interface_Mostra_Tela(Paciencia* paciencia) {
     switch (paciencia->tela_atual) {
@@ -233,7 +243,7 @@ static int _interface_monta_baralho_em_tela(Paciencia* paciencia) {
                 strcpy(linha, "|");
 
             pilhas_fileira->toString(pilhas_fileira, buffer, j, i);
-            _interface_monta_baralho_preenche_vazios(buffer, 24);
+            _interface_monta_baralho_preenche_vazios(buffer, 26);
             strcat(linha, buffer);
             strcat(linha, "|");
         }
@@ -261,10 +271,10 @@ static void _interface_monta_baralho_preenche_vazios(char* string, int tamanho) 
         for (i = 0; i < sobra/2; i++)
             strcat(buffer, " ");
     } else {
-        for (i = 0; i <= sobra/2; i++)
+        for (i = 0; i < sobra/2; i++)
             strcat(buffer, " ");
         strcat(buffer, string);
-        for (i = 0; i <= sobra/2; i++)
+        for (i = 0; i < sobra/2; i++)
             strcat(buffer, " ");
     }
     strcpy(string, buffer);
@@ -352,6 +362,7 @@ static void _interface_tela_principal_opcoes(Paciencia* paciencia) {
 
     switch (opcao_escolhida) {
         case 1: // Inicial novo jogo
+            paciencia->reiniciar(paciencia);
             paciencia->tela_atual = TELA_JOGO;
             break;
         case 2: // Creditos
@@ -371,6 +382,7 @@ static void _interface_tela_jogo_opcoes(Paciencia* paciencia, int* escolha_movim
             return _interface_tela_jogo_opcoes_lista(paciencia, escolha_movimento);
         case MOVIMENTO_1:
             return _interface_tela_jogo_opcoes_movimento1(paciencia, escolha_movimento);
+
         case MOVIMENTO_1_NAIPE:
             return _interface_tela_jogo_opcoes_movimento1_naipe(paciencia, escolha_movimento);
         case MOVIMENTO_1_FILEIRA:
@@ -523,13 +535,17 @@ static void _interface_tela_jogo_opcoes_movimento1_naipe(Paciencia* paciencia, i
 // Controle de opcoes do movimento 1 para pilhas de naipe:
 // Retirar uma carta da pilha de estoque e empilha numa das pilhas de fileira
 static void _interface_tela_jogo_opcoes_movimento1_fileira(Paciencia* paciencia, int* escolha_movimento) {
-
+    
 }
 
 // Controle de opcoes do movimento 1 para pilhas de naipe:
 // Retirar uma carta da pilha de estoque e empilha na pilha de descarte
 static void _interface_tela_jogo_opcoes_movimento1_descarte(Paciencia* paciencia, int* escolha_movimento) {
-
+    int sucesso = paciencia->movimento1(paciencia, PILHA_DESCARTE, NULL);
+    if (sucesso)
+        *escolha_movimento = MOVIMENTO_SUCESSO;
+    else
+        *escolha_movimento = MOVIMENTO_FALHA;
 }
 
 static void _interface_tela_jogo_opcoes_movimento2(Paciencia* paciencia, int* escolha_movimento) {
@@ -583,7 +599,7 @@ static int _interface_controle_pressione_enter_para_continuar(int sucesso) {
     if (sucesso)
         puts(" Movimento bem sucedido ");
     else
-        puts(" Nao foi possivel executar o movimento ");
+        puts(" Movimento invalido ");
     printf(" Pressione enter para continuar...");
 
     myflush ( stdin );

@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1527366204 source:w:\c\ed1\aa\main.c
+1527441433 source:w:\c\ed1\aa\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -40,7 +40,7 @@
 	"pilha_descarte.h"
 	"pilha_fileira.h"
 
-1527366772 w:\c\ed1\aa\interface.h
+1527441891 w:\c\ed1\aa\interface.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>

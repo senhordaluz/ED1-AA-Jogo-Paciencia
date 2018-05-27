@@ -8,21 +8,8 @@
 int main()
 {
 
-    int jogoRodando = 1;
+    Roda_Jogo();
 
-    Paciencia* paciencia = inicializa_paciencia(&jogoRodando);
-
-    int count = 0;
-
-    while (jogoRodando) {
-        count++;
-
-        Interface_Mostra_Tela(paciencia);
-
-        printf("FIM de LOOP: %d\n", count);
-        printf("Jogo Rodando: %d\n", jogoRodando);
-    }
-
-    printf("Hello world!\n");
+    printf("Fim de Jogo!\n");
     return 0;
 }

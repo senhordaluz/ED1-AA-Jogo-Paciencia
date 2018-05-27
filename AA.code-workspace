@@ -11,7 +11,8 @@
 			"pilha_estoque.h": "c",
 			"carta.h": "c",
 			"pilha.h": "c",
-			"stdlib.h": "c"
+			"stdlib.h": "c",
+			"paciencia.h": "c"
 		}
 	}
 }
