@@ -133,7 +133,7 @@ static int carta_getNaipe(Carta* carta) {
         case 'o':
             return OURO;
     }
-    return NULL;
+    return 99;
 }
 
 static void carta_toString(Carta* carta, char* string) {
