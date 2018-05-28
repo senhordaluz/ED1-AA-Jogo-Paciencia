@@ -22,7 +22,7 @@ struct pilhas_naipe {
 Pilhas_Naipe* cria_pilhas_naipe(void);
 void free_pilhas_naipe(Pilhas_Naipe* pilhas_naipe);
 static int isNaipeAlocado(Pilhas_Naipe* pilhas_naipe);
-static int isNaipeAlocado_outraPilha(Pilhas_Naipe* pilhas_naipe, int pilha_id);
+static int isNaipeAlocado_outraPilha(Pilhas_Naipe* pilhas_naipe, int pilha_id, int naipe_id);
 static int pilhas_naipe_push(Pilhas_Naipe* pilhas_naipe, int naipe, Carta* carta);
 static Carta* pilhas_naipe_pop(Pilhas_Naipe* pilhas_naipe, int naipe);
 static int pilhas_naipe_movimentacao_valida(Pilha* pilha_destino, Carta* carta);
@@ -70,12 +70,10 @@ static int isNaipeAlocado(Pilhas_Naipe* pilhas_naipe) {
     return 0;
 }
 
-static int isNaipeAlocado_outraPilha(Pilhas_Naipe* pilhas_naipe, int pilha_id) {
+static int isNaipeAlocado_outraPilha(Pilhas_Naipe* pilhas_naipe, int pilha_id, int naipe_id) {
     int i;
     for (i = 0; i < 4; i++) {
-        if ( i == pilha_id )
-            continue;
-        if ( pilhas_naipe->naipes[i] != 4 )
+        if ( i != pilha_id && pilhas_naipe->naipes[i] == naipe_id )
             return 1;
     }
     return 0;
@@ -89,7 +87,7 @@ static int pilhas_naipe_push(Pilhas_Naipe* pilhas_naipe, int pilha_id, Carta* ca
     }
 
     // Verifica se o naipe ja foi alocado em outra pilha
-    if ( isNaipeAlocado_outraPilha(pilhas_naipe, pilha_id) ) {
+    if ( isNaipeAlocado_outraPilha(pilhas_naipe, pilha_id, carta->getNaipe(carta)) ) {
         printf("Movimento invalido - Naipe Alocado!\n");
         return 0;
     }
