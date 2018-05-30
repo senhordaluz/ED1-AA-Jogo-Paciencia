@@ -12,7 +12,7 @@
 	"pilha.h"
 	"carta.h"
 
-1527714880 w:\c\ed1\aa\pilha.h
+1527715281 w:\c\ed1\aa\pilha.h
 	"carta.h"
 
 1527542167 w:\c\ed1\aa\pilha_naipe.h
@@ -36,7 +36,7 @@
 	"pilha_descarte.h"
 	"pilha_fileira.h"
 
-1527714953 w:\c\ed1\aa\interface.h
+1527715299 w:\c\ed1\aa\interface.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
