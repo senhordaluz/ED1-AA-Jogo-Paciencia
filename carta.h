@@ -156,31 +156,31 @@ static void carta_toString(Carta* carta, char* string) {
             strcat(string, "Dama");
             break;
         case '1':
-            strcat(string, "1");
-            break;
-        case '2':
             strcat(string, "2");
             break;
-        case '3':
+        case '2':
             strcat(string, "3");
             break;
-        case '4':
+        case '3':
             strcat(string, "4");
             break;
-        case '5':
+        case '4':
             strcat(string, "5");
             break;
-        case '6':
+        case '5':
             strcat(string, "6");
             break;
-        case '7':
+        case '6':
             strcat(string, "7");
             break;
-        case '8':
+        case '7':
             strcat(string, "8");
             break;
-        case '9':
+        case '8':
             strcat(string, "9");
+            break;
+        case '9':
+            strcat(string, "10");
             break;
     }
     switch (carta->naipe) {
