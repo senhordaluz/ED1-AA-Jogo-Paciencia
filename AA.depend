@@ -5,7 +5,7 @@
 1527716053 w:\c\ed1\aa\carta.h
 	<string.h>
 
-1527442275 w:\c\ed1\aa\pilha_estoque.h
+1527721596 w:\c\ed1\aa\pilha_estoque.h
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
@@ -23,7 +23,7 @@
 	"pilha.h"
 	"carta.h"
 
-1527717408 w:\c\ed1\aa\pilha_fileira.h
+1527721585 w:\c\ed1\aa\pilha_fileira.h
 	<string.h>
 	"pilha.h"
 	"carta.h"
@@ -36,7 +36,7 @@
 	"pilha_descarte.h"
 	"pilha_fileira.h"
 
-1527717404 w:\c\ed1\aa\interface.h
+1527721577 w:\c\ed1\aa\interface.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>

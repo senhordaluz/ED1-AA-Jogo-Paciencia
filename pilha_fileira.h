@@ -147,6 +147,9 @@ static void reordena_topo(Pilhas_Fileira* pilhas_fileira, int fileira_id) {
 }
 
 static int pilha_fileira_movimentacao_valida(Pilha* pilha_destino, Carta* carta) {
+    if ( isPilhaVazia(pilha_destino) )
+        return 1;
+    
     Carta* carta_topo = pilha_destino->cartas[pilha_destino->topo];
     if (pilha_fileira_movimentacao_valida_naipe(carta_topo, carta))
         return pilha_fileira_movimentacao_valida_valor(carta_topo, carta);
@@ -357,7 +360,10 @@ static int pilhas_fileira_maior_pilha_id(Pilhas_Fileira* pilhas_fileira) {
     int i;
     int maior_pilha_id = 0;
     for (i = 0; i < 7; i++)
-        if (pilhas_fileira->pilha[i]->topo > pilhas_fileira->pilha[maior_pilha_id]->topo)
+        if (pilhas_fileira->pilha[i]->topo > pilhas_fileira->pilha[maior_pilha_id]->topo
+            && !isPilhaVazia(pilhas_fileira->pilha[i]) )
+            maior_pilha_id = i;
+        else if ( isPilhaVazia(pilhas_fileira->pilha[maior_pilha_id]) )
             maior_pilha_id = i;
     return maior_pilha_id;
 }

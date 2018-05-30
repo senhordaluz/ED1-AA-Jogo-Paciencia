@@ -955,8 +955,8 @@ static void _interface_tela_fim_de_jogo_opcoes(Paciencia* paciencia) {
     int opcao_escolhida = _interface_controle_entrada_opcoes(3);
 
     switch (opcao_escolhida) {
+        paciencia->reiniciar(paciencia);
         case 1: // Inicial novo jogo
-            paciencia->reiniciar(paciencia);
             paciencia->tela_atual = TELA_JOGO;
             break;
         case 2: // Creditos

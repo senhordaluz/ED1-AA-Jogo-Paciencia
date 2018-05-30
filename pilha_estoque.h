@@ -100,19 +100,7 @@ static void cria_baralho_ordenado(Pilha* pilha) {
     pilha->push(pilha,nova_carta("KO"));
 }
 
-// static void embaralhar(Pilha* pilha) {
-//     int i;
-//     for (i = 0; i < 52; i++) {
-//         int r = rand()%52;
-
-//         Carta* temp = pilha->cartas[i];
-//         pilha->cartas[i] = pilha->cartas[r];
-//         pilha->cartas[r] = temp;
-//     }
-// }
-
-static void embaralhar(Pilha* pilha)
-{
+static void embaralhar(Pilha* pilha) {
     size_t n = 52;
     // PCarta array[52] = pilha->cartas;
     if (n > 1) 
@@ -127,25 +115,6 @@ static void embaralhar(Pilha* pilha)
         }
     }
 }
-
-// void swap(Carta *a, Carta *b) {
-//     Carta* temp = a;
-//     a = b;
-//     b = temp;
-// }
-
-// void randomize(PCarta arr[], int n) {
-//     srand(time(NULL));
-//     int i;
-//     for(i = n-1; i > 0; i--) {
-//         int j = rand() % (i+1);
-//         swap(arr[i], arr[j]);
-//     }
-// }
-
-// static void embaralhar(Pilha* pilha) {
-//     randomize(pilha->cartas, 52);
-// }
 
 static void pilha_estoque_limpa(Pilha* pilha) {
     pilha_limpa(pilha);
