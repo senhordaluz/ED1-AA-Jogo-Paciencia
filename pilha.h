@@ -75,7 +75,10 @@ static Carta* pilha_pop(Pilha* pilha) {
     if (!isPilhaVazia(pilha)) {
         Carta* carta = pilha->cartas[pilha->topo];
         pilha->cartas[pilha->topo] = NULL;
-        pilha->topo--;
+        if ( pilha->topo == 0 )
+            pilha->topo = pilha->tamanho;
+        else
+            pilha->topo--;
         return carta;
     }
     printf("Pilha vazia!\n");

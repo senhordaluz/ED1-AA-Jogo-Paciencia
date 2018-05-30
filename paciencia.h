@@ -167,6 +167,7 @@ static int paciencia_movimento1(Paciencia* paciencia, int tipo_pilha, int pilha_
     // Variveis utilizadas
     Pilha* pilha_estoque = paciencia->pilha_estoque;
     Carta* carta = pilha_estoque->pop(pilha_estoque);
+    carta->print(carta);
 
     // Verifica se a pilha estava vazia
     if (!carta) {
