@@ -88,12 +88,14 @@ void Interface_Mostra_Tela(Paciencia* paciencia);
 
 static void _interface_mostra_tela_principal(Paciencia* paciencia);
 static void _interface_mostra_tela_jogo(Paciencia* paciencia);
+static void _interface_mostra_creditos(Paciencia* paciencia);
 static void _interface_mostra_tela_fim_de_jogo(Paciencia* paciencia);
 
 static void _interface_monta_cabecalho(void);
 static void _interface_monta_baralho_em_tela(Paciencia* paciencia);
 static void _interface_monta_baralho_preenche_vazios(char* string, int tamanho);
 static void _interface_monta_mensagem_fim_de_jogo(void);
+static void _interface_creditos_mensagem(void);
 
 static void _interface_limpa_tela(void);
 static void _interface_muda_cor_console(char cor_fonte, char cor_fundo);
@@ -115,6 +117,7 @@ static void _interface_tela_jogo_opcoes_movimento2_naipe(Paciencia* paciencia, i
 static void _interface_tela_jogo_opcoes_movimento3(Paciencia* paciencia, int* escolha_movimento);
 static void _interface_tela_jogo_opcoes_movimento3_fileira_destino(Paciencia* paciencia, int* escolha_movimento, int fileira_origem);
 static void _interface_tela_fim_de_jogo_opcoes(Paciencia* paciencia);
+static void _interface_creditos_opcoes(Paciencia* paciencia);
 
 static int _interface_controle_entrada_opcoes(int opcoes_validas);
 static int _interface_controle_escolha_carta(Paciencia* paciencia, int fileira_origem);
@@ -146,7 +149,7 @@ void Interface_Mostra_Tela(Paciencia* paciencia) {
         case TELA_JOGO:
             return _interface_mostra_tela_jogo(paciencia);
         case TELA_CREDITOS: // Redireciona para tela principal para testes
-            return _interface_mostra_tela_principal(paciencia);
+            return _interface_mostra_creditos(paciencia);
         case FIM_DE_JOGO:
             return _interface_mostra_tela_fim_de_jogo(paciencia);
         case SAIR:
@@ -185,6 +188,17 @@ static void _interface_mostra_tela_jogo(Paciencia* paciencia) {
         // Exibe opcoes
         _interface_tela_jogo_opcoes(paciencia, &escolha_movimento);
     } while (escolha_movimento != PROXIMA_ESCOLHA);
+}
+
+// Creditos
+static void _interface_mostra_creditos(Paciencia* paciencia) {
+    _interface_limpa_tela();
+
+    _interface_monta_cabecalho();
+
+    _interface_creditos_mensagem();
+
+    _interface_creditos_opcoes(paciencia);
 }
 
 // Fim de jogo
@@ -359,6 +373,36 @@ static void _interface_monta_mensagem_fim_de_jogo(void) {
     _interface_adiciona_linha_vazia(tela);
 
     _interface_preenche_lados(linha, "O JOGO CHEGOU AO FIM");
+    _interface_adiciona_linha(tela, linha);
+
+    _interface_adiciona_linha_vazia(tela);
+    _interface_adiciona_linha_vazia(tela);
+
+    _interface_monta_linha_separacao(tela);
+
+    // Preenche tela
+    puts(tela);
+}
+
+// Mensagem de Creditos
+static void _interface_creditos_mensagem(void) {
+    char tela[SCREEN_BUFFER_SIZE] = "";
+    char linha[BUFFER_SIZE] = "";
+
+    _interface_adiciona_linha_vazia(tela);
+    _interface_preenche_lados(linha, "JOGO DESENVOLVIDO COMO ATIVIDADE ACADEMICA DA DISCIPLINA ESTRUTURA DE DADOS 1 PARA A UNIVERSIDADE FEDERAL RURAL DO RIO DE JANEIRO");
+    _interface_adiciona_linha(tela, linha);
+
+    _interface_adiciona_linha_vazia(tela);
+    _interface_preenche_lados(linha, "DESENVOLVEDOR - PEDRO DA LUZ");
+    _interface_adiciona_linha(tela, linha);
+    _interface_preenche_lados(linha, "@SENHORDALUZ");
+    _interface_adiciona_linha(tela, linha);
+
+    _interface_adiciona_linha_vazia(tela);
+    _interface_preenche_lados(linha, "CODIGO FONTE DISPONIVEL NO SEGUINTE LINK");
+    _interface_adiciona_linha(tela, linha);
+    _interface_preenche_lados(linha, "https://github.com/senhordaluz/ED1-AA-Jogo-Paciencia");
     _interface_adiciona_linha(tela, linha);
 
     _interface_adiciona_linha_vazia(tela);
@@ -966,6 +1010,17 @@ static void _interface_tela_fim_de_jogo_opcoes(Paciencia* paciencia) {
             paciencia->tela_atual = SAIR;
             break;
     }
+}
+
+// Opcoes dos creditos
+static void _interface_creditos_opcoes(Paciencia* paciencia) {
+
+    puts(" Pressione enter para retornar ao menu principal...");
+
+    myflush ( stdin );
+    mypause();
+
+    paciencia->tela_atual = TELA_INICIO;
 }
 
 // ***********************************************************************************************************
