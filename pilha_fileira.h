@@ -192,7 +192,7 @@ static int pilha_fileira_movimentacao_valida_valor(Carta* carta_topo, Carta* nov
                 return 1;
             return 0;
         case '9':
-            if (nova_carta->valor == '9')
+            if (nova_carta->valor == '8')
                 return 1;
             return 0;
         case '8':
@@ -261,7 +261,7 @@ static int pilhas_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_orige
     int total = pilha_origem->topo - posicao_carta;
 
     // Cria pilha auxiliar com cartas para mover
-    for (i = 0; i < total; i++) {
+    for (i = 0; i <= total; i++) {
         Carta* carta = pilha_origem->pop(pilha_origem);
         pilha_auxiliar->push(pilha_auxiliar, carta);
     }
@@ -270,7 +270,7 @@ static int pilhas_fileira_move(Pilhas_Fileira* pilhas_fileira, int fileira_orige
     reordena_topo(pilhas_fileira, fileira_origem);
 
     // Coloca cartas movidas na fileira de destino
-    for (i = 0; i < total; i++) {
+    for (i = 0; i <= total; i++) {
         Carta* carta = pilha_auxiliar->pop(pilha_auxiliar);
         pilha_destino->push(pilha_destino, carta);
     }
