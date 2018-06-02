@@ -10,7 +10,7 @@ JOGO DESENVOLVIDO COMO ATIVIDADE ACADEMICA DA DISCIPLINA **ESTRUTURA DE DADOS 1*
 
 ## Copyright & License
 
-Copyright (c) 2018 - Released under the [MIT license](LICENSE).
+Copyright (c) 2018 - Released under the [MIT license](LICENSE.md).
 
 ## Compilando o jogo
 
