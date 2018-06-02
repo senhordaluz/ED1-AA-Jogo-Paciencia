@@ -178,15 +178,19 @@ static void _interface_mostra_tela_jogo(Paciencia* paciencia) {
 
     int escolha_movimento = ESCOLHA_MOVIMENTO;
     do {
-        _interface_limpa_tela();
+        if ( paciencia->isFimDeJogo(paciencia) )
+            escolha_movimento = PROXIMA_ESCOLHA;
+        else {
+            _interface_limpa_tela();
 
-        _interface_monta_cabecalho();
+            _interface_monta_cabecalho();
 
-        // Mostra cartas
-        _interface_monta_baralho_em_tela(paciencia);
+            // Mostra cartas
+            _interface_monta_baralho_em_tela(paciencia);
 
-        // Exibe opcoes
-        _interface_tela_jogo_opcoes(paciencia, &escolha_movimento);
+            // Exibe opcoes
+            _interface_tela_jogo_opcoes(paciencia, &escolha_movimento);
+        }
     } while (escolha_movimento != PROXIMA_ESCOLHA);
 }
 
@@ -203,6 +207,8 @@ static void _interface_mostra_creditos(Paciencia* paciencia) {
 
 // Fim de jogo
 static void _interface_mostra_tela_fim_de_jogo(Paciencia* paciencia) {
+    paciencia->reiniciar(paciencia);
+
     _interface_limpa_tela();
 
     _interface_monta_cabecalho();
@@ -999,7 +1005,6 @@ static void _interface_tela_fim_de_jogo_opcoes(Paciencia* paciencia) {
     int opcao_escolhida = _interface_controle_entrada_opcoes(3);
 
     switch (opcao_escolhida) {
-        paciencia->reiniciar(paciencia);
         case 1: // Inicial novo jogo
             paciencia->tela_atual = TELA_JOGO;
             break;

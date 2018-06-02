@@ -48,10 +48,10 @@ static void pilhas_fileira_toStringCarta(Pilhas_Fileira* pilhas_fileira, char* s
 static void pilhas_fileira_toString(Pilhas_Fileira* pilhas_fileira, char* string);
 
 Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque) {
-    if (pilha_estoque->topo != 51) {
-        printf("Pilha Estoque invalida!\n");
-        return NULL;
-    }
+    // if (pilha_estoque->topo != 51) {
+    //     printf("Pilha Estoque invalida!\n");
+    //     return NULL;
+    // }
 
     Pilhas_Fileira* pilhas_fileira = (Pilhas_Fileira*)malloc(sizeof(Pilhas_Fileira));
 
@@ -63,9 +63,10 @@ Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque) {
     int i;
     for (i = 0; i < 7; i++) {
         pilhas_fileira->pilha[i] = cria_pilha_generica(52);
+        pilhas_fileira->carta_virada[i] = 52;
     }
 
-    preenche_pilhas_fileira(pilhas_fileira, pilha_estoque);
+    // preenche_pilhas_fileira(pilhas_fileira, pilha_estoque);
 
     pilhas_fileira->push = pilhas_fileira_push;
     pilhas_fileira->retorna = pilhas_fileira_return;
@@ -376,19 +377,22 @@ static void pilhas_fileira_toStringCarta(Pilhas_Fileira* pilhas_fileira, char* s
         return;
     }
 
-    if ( carta_id < pilhas_fileira->carta_virada[fileira_id] )
-        strcat(string, "Carta Virada");
-    else if (pilhas_fileira->pilha[fileira_id]->topo >= carta_id ) {
-        Pilha* pilha = pilhas_fileira->pilha[fileira_id];
-        Carta* carta = pilha->cartas[carta_id];
-        if (carta) {
-            char buffer[30] = "";
-            snprintf(buffer, 30, "[%d]: ", carta_id);
-            carta->toString(carta, string);
-            strcat(buffer, string);
-            strcpy(string, buffer);
+    if ( pilhas_fileira->carta_virada[fileira_id] != pilhas_fileira->pilha[fileira_id]->tamanho ) {
+        if ( carta_id < pilhas_fileira->carta_virada[fileira_id] )
+            strcat(string, "Carta Virada");
+        else if ( pilhas_fileira->pilha[fileira_id]->topo >= carta_id ) {
+            Pilha* pilha = pilhas_fileira->pilha[fileira_id];
+            Carta* carta = pilha->cartas[carta_id];
+            if (carta) {
+                char buffer[30] = "";
+                snprintf(buffer, 30, "[%d]: ", carta_id);
+                carta->toString(carta, string);
+                strcat(buffer, string);
+                strcpy(string, buffer);
+            }
         }
     }
+
 }
 
 static void pilhas_fileira_toString(Pilhas_Fileira* pilhas_fileira, char* string) {

@@ -32,8 +32,8 @@ Pilha* cria_pilha_estoque(void) {
 
     pilha->limpa = pilha_estoque_limpa;
 
-    cria_baralho_ordenado(pilha);
-    embaralhar(pilha);
+    // cria_baralho_ordenado(pilha);
+    // embaralhar(pilha);
 
     return pilha;
 }
