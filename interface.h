@@ -19,7 +19,7 @@
 #include "pilha_descarte.h"
 #include "pilha_fileira.h"
 
-#define VERSAO  "VERSAO - 1.0.1"
+#define VERSAO  "VERSAO - 1.0.2"
 
 // Telas
 #define TELA_INICIO     0
@@ -400,9 +400,13 @@ static void _interface_creditos_mensagem(void) {
     _interface_adiciona_linha(tela, linha);
 
     _interface_adiciona_linha_vazia(tela);
-    _interface_preenche_lados(linha, "DESENVOLVEDOR - PEDRO DA LUZ");
+    _interface_preenche_lados(linha, "DESENVOLVEDORES");
     _interface_adiciona_linha(tela, linha);
-    _interface_preenche_lados(linha, "@SENHORDALUZ");
+    _interface_preenche_lados(linha, "PEDRO OLIVEIRA DA LUZ - @SENHORDALUZ");
+    _interface_adiciona_linha(tela, linha);
+    _interface_preenche_lados(linha, "LUCAS MORAIS PEREIRA DA SILVA");
+    _interface_adiciona_linha(tela, linha);
+    _interface_preenche_lados(linha, "FELIPE RANGEL DA SILVA");
     _interface_adiciona_linha(tela, linha);
 
     _interface_adiciona_linha_vazia(tela);

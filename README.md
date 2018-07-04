@@ -5,7 +5,9 @@ JOGO DESENVOLVIDO COMO ATIVIDADE ACADEMICA DA DISCIPLINA **ESTRUTURA DE DADOS 1*
 *Professor:* **UBIRATAM CARVALHO DE PAULA JUNIOR**
 
 *Aluno:*
-        **Pedro da Luz**
+        **Pedro Oliveira da Luz**
+        **Lucas Morais Pereira da Silva**
+        **Felipe Rangel da Silva**
 
 
 ## Copyright & License
