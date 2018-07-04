@@ -1,12 +1,12 @@
-# PACIENCIA - VERSÃO 1.0.1
+# PACIENCIA - VERSÃO 1.0.2
 
 JOGO DESENVOLVIDO COMO ATIVIDADE ACADEMICA DA DISCIPLINA **ESTRUTURA DE DADOS 1** PARA A UNIVERSIDADE FEDERAL RURAL DO RIO DE JANEIRO (*UFRRJ*).
 
 *Professor:* **UBIRATAM CARVALHO DE PAULA JUNIOR**
 
-*Aluno:*
-        **Pedro Oliveira da Luz**
-        **Lucas Morais Pereira da Silva**
+*Alunos:*
+        **Pedro Oliveira da Luz**;
+        **Lucas Morais Pereira da Silva**;
         **Felipe Rangel da Silva**
 
 
