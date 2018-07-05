@@ -14,26 +14,13 @@ static void embaralhar(Pilha* pilha);
 static void pilha_estoque_limpa(Pilha* pilha);
 
 Pilha* cria_pilha_estoque(void) {
-    // Pilha* pilha = (Pilha*) malloc(sizeof(Pilha));
-
-    // if (!pilha) {
-    //     printf("Erro: Nao foi possivel alocar memoria para a pilha de estoque!\nO programa sera encerrado!\n");
-    //     exit(1);
-    // }
-
-    // pilha->topo = 52;
-    // pilha->tamanho = 52;
-    // pilha->cartas = (Pilha*)malloc(52 * sizeof(Pilha));
-
-    // pilha->push = _pilha_push;
-    // pilha->pop = _pilha_pop;
 
     Pilha* pilha = cria_pilha_generica(52);
 
     pilha->limpa = pilha_estoque_limpa;
 
-    // cria_baralho_ordenado(pilha);
-    // embaralhar(pilha);
+    cria_baralho_ordenado(pilha);
+    embaralhar(pilha);
 
     return pilha;
 }

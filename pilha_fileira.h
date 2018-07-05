@@ -66,7 +66,7 @@ Pilhas_Fileira* cria_pilhas_fileira(Pilha* pilha_estoque) {
         pilhas_fileira->carta_virada[i] = 52;
     }
 
-    // preenche_pilhas_fileira(pilhas_fileira, pilha_estoque);
+    preenche_pilhas_fileira(pilhas_fileira, pilha_estoque);
 
     pilhas_fileira->push = pilhas_fileira_push;
     pilhas_fileira->retorna = pilhas_fileira_return;
