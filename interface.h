@@ -19,7 +19,7 @@
 #include "pilha_descarte.h"
 #include "pilha_fileira.h"
 
-#define VERSAO  "VERSAO - 1.0.2"
+#define VERSAO  "VERSAO - 1.0.3"
 
 // Telas
 #define TELA_INICIO     0

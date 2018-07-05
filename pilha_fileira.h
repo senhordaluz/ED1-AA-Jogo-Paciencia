@@ -298,6 +298,10 @@ static int pilhas_fileira_push(Pilhas_Fileira* pilhas_fileira, int fileira_id, C
 static int pilhas_fileira_return(Pilhas_Fileira* pilhas_fileira, int fileira_id, Carta* carta) {
     Pilha* pilha_destino = pilhas_fileira->pilha[fileira_id];
 
+    if (pilhas_fileira->carta_virada[fileira_id] == pilha_destino->topo) {
+        pilhas_fileira->carta_virada[fileira_id] = pilha_destino->topo+1;
+    }
+
     return pilha_destino->push(pilha_destino, carta);
 }
 

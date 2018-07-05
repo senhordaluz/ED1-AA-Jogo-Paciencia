@@ -15,7 +15,7 @@
 1527715281 w:\c\ed1\aa\pilha.h
 	"carta.h"
 
-1527542167 w:\c\ed1\aa\pilha_naipe.h
+1530756571 w:\c\ed1\aa\pilha_naipe.h
 	"pilha.h"
 	"carta.h"
 
@@ -23,7 +23,7 @@
 	"pilha.h"
 	"carta.h"
 
-1527964068 w:\c\ed1\aa\pilha_fileira.h
+1530760461 w:\c\ed1\aa\pilha_fileira.h
 	<string.h>
 	"pilha.h"
 	"carta.h"
