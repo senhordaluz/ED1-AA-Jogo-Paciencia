@@ -28,7 +28,7 @@
 	"pilha.h"
 	"carta.h"
 
-1527714946 w:\c\ed1\aa\paciencia.h
+1530820046 w:\c\ed1\aa\paciencia.h
 	"carta.h"
 	"pilha.h"
 	"pilha_estoque.h"
@@ -36,7 +36,7 @@
 	"pilha_descarte.h"
 	"pilha_fileira.h"
 
-1530745795 w:\c\ed1\aa\interface.h
+1530820128 w:\c\ed1\aa\interface.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>

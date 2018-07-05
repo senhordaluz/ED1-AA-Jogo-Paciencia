@@ -229,7 +229,7 @@ static int paciencia_movimento2(Paciencia* paciencia, int fileira_id, int pilha_
     Pilhas_Fileira* pilhas_fileira = paciencia->pilhas_fileira;
     Pilhas_Naipe* pilhas_naipe = paciencia->pilhas_naipe;
 
-    Carta* carta = pilhas_fileira->pop(pilhas_fileira, fileira_id);
+    Carta* carta = pilhas_fileira->pilha[fileira_id]->cartas[pilhas_fileira->pilha[fileira_id]->topo];
     if (!carta) {
         printf("Pilha Vazia!\n");
         return 0;
@@ -237,9 +237,10 @@ static int paciencia_movimento2(Paciencia* paciencia, int fileira_id, int pilha_
 
     int sucesso = pilhas_naipe->push(pilhas_naipe, pilha_naipe_id, carta);
     if (!sucesso) {
-        pilhas_fileira->retorna(pilhas_fileira, fileira_id, carta);
+        // pilhas_fileira->retorna(pilhas_fileira, fileira_id, carta);
         return 0;
     }
+    pilhas_fileira->pop(pilhas_fileira, fileira_id);
     return 1;
 }
 
